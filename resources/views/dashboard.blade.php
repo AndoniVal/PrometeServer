@@ -8,6 +8,8 @@
 </head>
 <body class="bg-gray-100 min-h-screen">
 
+$algo = 1;
+
     {{-- Navbar --}}
     <nav class="bg-white shadow px-6 py-4 flex justify-between items-center">
         <h1 class="text-xl font-bold text-gray-800">Panel de Control</h1>
