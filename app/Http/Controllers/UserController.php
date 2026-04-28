@@ -36,4 +36,42 @@ class UserController extends Controller
         User::findOrFail($id)->delete();
         return response()->json(['message' => 'Usuario eliminado']);
     }
+    public function miCuenta()
+{
+    $user = auth()->user();
+    return view('mi-cuenta', compact('user'));
+}
+
+public function actualizarCuenta(Request $request)
+{
+    $user = auth()->user();
+
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'email'  => 'required|email|unique:users,email,' . $user->id,
+        'edad'   => 'nullable|integer|min:1|max:120',
+    ]);
+
+    $user->update($request->only('nombre', 'email', 'edad'));
+
+    return back()->with('success', '✓ Datos actualizados correctamente.');
+}
+
+public function cambiarPassword(Request $request)
+{
+    $request->validate([
+        'password_actual' => 'required',
+        'password_nuevo'  => 'required|min:8|confirmed',
+    ]);
+
+    $user = auth()->user();
+
+    if (!\Hash::check($request->password_actual, $user->password)) {
+        return back()->withErrors(['password_actual' => 'La contraseña actual no es correcta.']);
+    }
+
+    $user->update(['password' => \Hash::make($request->password_nuevo)]);
+
+    return back()->with('success_pass', '✓ Contraseña actualizada correctamente.');
+}
 }

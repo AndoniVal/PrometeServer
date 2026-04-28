@@ -68,4 +68,15 @@ class TransaccionController extends Controller
             ->get();
         return response()->json($transacciones);
     }
+        public function transacciones()
+    {
+        $transacciones = Transaccion::with(['usuario', 'producto'])
+            ->orderBy('fecha', 'desc')
+            ->take(20)
+            ->get();
+
+        $user = auth()->user();
+
+        return view('transacciones', compact('user', 'transacciones'));
+    }
 }
