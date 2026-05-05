@@ -50,4 +50,26 @@ class MaterialController extends Controller
             ->get();
         return response()->json($materiales);
     }
+    public function inventario(){
+        $materiales = Material::with('usuario')->orderBy('created_at', 'desc')->get();
+        $prestamos = \App\Models\Prestamo::with(['usuario', 'material'])
+            ->orderBy('fecha', 'desc')
+            ->take(20)
+            ->get();
+
+        $totalMateriales = $materiales->count();
+        $disponibles = $materiales->where('estado', 'disponible')->count();
+        $prestados = $materiales->where('estado', 'prestado')->count();
+
+        $user = auth()->user();
+
+        return view('inventario', compact(
+            'user',
+            'materiales',
+            'prestamos',
+            'totalMateriales',
+            'disponibles',
+            'prestados'
+        ));
+    }
 }

@@ -48,8 +48,13 @@ class AuthController extends Controller
 
     // Muestra el dashboard
     public function dashboard()
-    {
-        $user = Auth::user();
-        return view('dashboard', compact('user'));
-    }
+{
+    $user = Auth::user();
+    $ultimosMovimientos = \App\Models\Transaccion::with(['producto', 'usuario'])
+        ->orderBy('fecha', 'desc')
+        ->take(5)
+        ->get();
+
+    return view('dashboard', compact('user', 'ultimosMovimientos'));
+}
 }
