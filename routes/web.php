@@ -5,6 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\TransaccionController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\MaterialController;
 
 Route::get('/', [PageController::class, 'index']);
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -18,4 +20,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/productos', [ProductoController::class, 'store'])->name('productos.store');
     Route::put('/productos/{id}', [ProductoController::class, 'update'])->name('productos.update');
     Route::delete('/productos/{id}', [ProductoController::class, 'destroy'])->name('productos.destroy');
+
+    Route::get('/transacciones', [TransaccionController::class, 'transacciones'])->name('transacciones');
+    Route::get('/mi-cuenta', [UserController::class, 'miCuenta'])->name('mi-cuenta');
+    Route::post('/mi-cuenta/actualizar', [UserController::class, 'actualizarCuenta'])->name('mi-cuenta.actualizar');
+    Route::post('/mi-cuenta/password', [UserController::class, 'cambiarPassword'])->name('mi-cuenta.password');
+
+    Route::post('/mi-cuenta/avatar', [UserController::class, 'subirAvatar'])->name('mi-cuenta.avatar');
+    Route::get('/inventario', [MaterialController::class, 'inventario'])->name('inventario');
 });
