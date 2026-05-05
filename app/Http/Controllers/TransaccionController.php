@@ -68,54 +68,15 @@ class TransaccionController extends Controller
             ->get();
         return response()->json($transacciones);
     }
-    // ── MÉTODOS WEB (economato) ──────────────────────────────
-
-    public function economato()
+        public function transacciones()
     {
-        $productos = Producto::orderBy('nombre')->get();
         $transacciones = Transaccion::with(['usuario', 'producto'])
             ->orderBy('fecha', 'desc')
-            ->take(10)
+            ->take(20)
             ->get();
-
-        $totalProductos = $productos->count();
-        $stockBajo = $productos->where('stock', '<', 10)->count();
-        $comprasMes = Transaccion::whereMonth('fecha', now()->month)->count();
 
         $user = auth()->user();
 
-        return view('economato', compact(
-            'user',
-            'productos',
-            'transacciones',
-            'totalProductos',
-            'stockBajo',
-            'comprasMes'
-        ));
+        return view('transacciones', compact('user', 'transacciones'));
     }
-
-    public function comprar(Request $request)
-    {
-        $request->validate([
-            'id_prod'  => 'required|exists:productos,id',
-            'cantidad' => 'required|integer|min:1',
-        ]);
-
-        $producto = Producto::findOrFail($request->id_prod);
-
-        if ($producto->stock < $request->cantidad) {
-            return back()->withErrors(['cantidad' => 'Stock insuficiente para este producto.']);
-        }
-
-        $producto->decrement('stock', $request->cantidad);
-
-        Transaccion::create([
-            'id_us'    => auth()->id(),
-            'id_prod'  => $request->id_prod,
-            'cantidad' => $request->cantidad,
-            'fecha'    => now(),
-        ]);
-
-        return back()->with('success', '✓ Compra registrada correctamente.');
-    }
-    }
+}
