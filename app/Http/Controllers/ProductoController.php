@@ -7,53 +7,48 @@ use Illuminate\Http\Request;
 
 class ProductoController extends Controller
 {
-    public function index()
-    {
-        return response()->json(Producto::all());
-    }
-
     public function store(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'tipo' => 'required|string|max:255',
-            'stock' => 'required|integer|min:0',
-        ]);
+        try {
+            $validated = $request->validate([
+                'nombre' => 'required|string|max:255',
+                'tipo'   => 'required|string|max:255',
+                'stock'  => 'required|integer|min:0',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect('/economato')
+                ->withErrors($e->errors())
+                ->withInput();
+        }
 
-        $producto = Producto::create($request->all());
-        return response()->json($producto, 201);
-    }
+        Producto::create($validated);
 
-    public function show($id)
-    {
-        $producto = Producto::with('transacciones')->findOrFail($id);
-        return response()->json($producto);
+        return redirect('/economato')->with('success', 'Producto creado con éxito');
     }
 
     public function update(Request $request, $id)
     {
+        try {
+            $validated = $request->validate([
+                'nombre' => 'required|string|max:255',
+                'tipo'   => 'required|string|max:255',
+                'stock'  => 'required|integer|min:0',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect('/economato')
+                ->withErrors($e->errors())
+                ->withInput();
+        }
+
         $producto = Producto::findOrFail($id);
-        $producto->update($request->all());
-        return response()->json($producto);
+        $producto->update($validated);
+
+        return redirect('/economato')->with('success', 'Producto actualizado');
     }
 
     public function destroy($id)
     {
         Producto::findOrFail($id)->delete();
-        return response()->json(['message' => 'Producto eliminado']);
-    }
-
-    public function sinStock()
-    {
-        $productos = Producto::where('stock', 0)->get();
-        return response()->json($productos);
-    }
-
-    public function actualizarStock(Request $request, $id)
-    {
-        $request->validate(['stock' => 'required|integer|min:0']);
-        $producto = Producto::findOrFail($id);
-        $producto->update(['stock' => $request->stock]);
-        return response()->json($producto);
+        return redirect('/economato')->with('success', 'Producto eliminado');
     }
 }
