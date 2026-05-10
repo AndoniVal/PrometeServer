@@ -7,6 +7,8 @@ use App\Http\Controllers\TransaccionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\CarritoController;
+use App\Http\Controllers\FinanzasController;
 
 Route::get('/', [PageController::class, 'index']);
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -36,4 +38,25 @@ Route::middleware('auth')->group(function () {
     Route::post('/mi-cuenta/actualizar', [UserController::class, 'actualizarCuenta'])->name('mi-cuenta.actualizar');
     Route::post('/mi-cuenta/password', [UserController::class, 'cambiarPassword'])->name('mi-cuenta.password');
     Route::post('/mi-cuenta/avatar', [UserController::class, 'subirAvatar'])->name('mi-cuenta.avatar');
+
+    Route::get('/carrito', [CarritoController::class, 'ver'])->name('carrito');
+    Route::post('/carrito/agregar', [CarritoController::class, 'agregar'])->name('carrito.agregar');
+    Route::delete('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
+    Route::post('/carrito/vaciar', [CarritoController::class, 'vaciar'])->name('carrito.vaciar');
+    Route::post('/carrito/confirmar', [CarritoController::class, 'confirmar'])->name('carrito.confirmar');
+
+    Route::get('/carrito', [CarritoController::class, 'ver'])->name('carrito');
+    Route::post('/carrito/agregar', [CarritoController::class, 'agregar'])->name('carrito.agregar');
+    Route::delete('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
+    Route::post('/carrito/vaciar', [CarritoController::class, 'vaciar'])->name('carrito.vaciar');
+    Route::post('/carrito/confirmar', [CarritoController::class, 'confirmar'])->name('carrito.confirmar');
+
+    Route::get('/finanzas', [FinanzasController::class, 'index'])
+    ->name('finanzas')
+    ->middleware('auth');
+
+    Route::post('/stock/añadir', [ProductoController::class, 'añadirStock'])->name('stock.añadir');
+    Route::post('/stock/eliminar', [ProductoController::class, 'eliminarStock'])->name('stock.eliminar');
+
+    
 });

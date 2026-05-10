@@ -68,7 +68,7 @@ class TransaccionController extends Controller
             ->get();
         return response()->json($transacciones);
     }
-        public function transacciones()
+    public function transacciones()
     {
         $transacciones = Transaccion::with(['usuario', 'producto'])
             ->orderBy('fecha', 'desc')
@@ -79,27 +79,29 @@ class TransaccionController extends Controller
 
         return view('transacciones', compact('user', 'transacciones'));
     }
-        public function economato()
+
+    public function economato()
     {
         $productos = Producto::orderBy('nombre')->get();
         $transacciones = Transaccion::with(['usuario', 'producto'])
-            ->orderBy('fecha', 'desc')
-            ->take(10)
-            ->get();
+            ->orderBy('fecha', 'desc')->take(10)->get();
 
         $totalProductos = $productos->count();
         $stockBajo = $productos->where('stock', '<', 10)->count();
         $comprasMes = Transaccion::whereMonth('fecha', now()->month)->count();
-
         $user = auth()->user();
 
+        $misMovimientos = Transaccion::with('producto')
+            ->where('id_us', $user->id)
+            ->orderBy('fecha', 'desc')->take(10)->get();
+
+        $todosMovimientos = Transaccion::with(['usuario', 'producto'])
+            ->orderBy('fecha', 'desc')->take(15)->get();
+
         return view('economato', compact(
-            'user',
-            'productos',
-            'transacciones',
-            'totalProductos',
-            'stockBajo',
-            'comprasMes'
+            'user', 'productos', 'transacciones',
+            'totalProductos', 'stockBajo', 'comprasMes',
+            'misMovimientos', 'todosMovimientos'
         ));
     }
 
