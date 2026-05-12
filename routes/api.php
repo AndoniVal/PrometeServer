@@ -19,7 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('users', UserController::class);
     Route::apiResource('materiales', MaterialController::class);
-    Route::apiResource('productos', ProductoController::class);
+    //Route::apiResource('productos', ProductoController::class);
     Route::apiResource('prestamos', PrestamoController::class);
     Route::apiResource('transacciones', TransaccionController::class);
 
