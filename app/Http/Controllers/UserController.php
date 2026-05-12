@@ -74,4 +74,23 @@ public function cambiarPassword(Request $request)
 
     return back()->with('success_pass', '✓ Contraseña actualizada correctamente.');
 }
+
+public function subirAvatar(Request $request)
+{
+    $request->validate([
+        'avatar' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+    ]);
+
+    $user = auth()->user();
+
+    // Borrar avatar anterior si no es el por defecto
+    if ($user->avatar && \Storage::disk('public')->exists($user->avatar)) {
+        \Storage::disk('public')->delete($user->avatar);
+    }
+
+    $path = $request->file('avatar')->store('avatars', 'public');
+    $user->update(['avatar' => $path]);
+
+    return back()->with('success', '✓ Foto de perfil actualizada correctamente.');
+}
 }
