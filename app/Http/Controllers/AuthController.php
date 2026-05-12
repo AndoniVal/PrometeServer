@@ -47,18 +47,19 @@ class AuthController extends Controller
     }
 
     // Muestra el dashboard
-public function dashboard()
-{
-    $user = Auth::user();
-    $ultimosMovimientos = \App\Models\Transaccion::with(['producto', 'usuario'])
-        ->orderBy('fecha', 'desc')
-        ->take(5)
-        ->get();
+    public function dashboard()
+    {
+        $user = Auth::user();
 
-    if ($user->rol === 'admin') {
-        return view('dashboard', compact('user', 'ultimosMovimientos'));
+        $ultimosMovimientos = \App\Models\Transaccion::with(['producto', 'usuario'])
+            ->orderBy('fecha', 'desc')
+            ->take(5)
+            ->get();
+
+        if ($user->rol === 'administrador') {
+            return view('dashboard', compact('user', 'ultimosMovimientos'));
+        }
+
+        return view('dashboard-usuario', compact('user'));
     }
-
-    return view('dashboard-usuario', compact('user'));
-}
 }
