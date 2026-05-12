@@ -74,17 +74,27 @@ class CarritoController extends Controller
             return back()->withErrors(['carrito' => 'El carrito está vacío.']);
         }
 
-        foreach ($carrito as $item) {
-            $producto = Producto::findOrFail($item['id']);
+        $total = array_sum(array_map(fn($item) => $item['precio'] * $item['cantidad'], $carrito));
+        $user = auth()->user();
 
+        // Verificar stock antes de procesar
+        foreach ($carrito as $item) {
+            $producto = \App\Models\Producto::findOrFail($item['id']);
             if ($producto->stock < $item['cantidad']) {
                 return back()->withErrors(['stock' => "Stock insuficiente para {$producto->nombre}."]);
             }
+        }
 
+        // Descontar saldo (permite negativo para sistema de fiar)
+        $user->decrement('saldo', $total);
+
+        // Crear transacciones y descontar stock
+        foreach ($carrito as $item) {
+            $producto = \App\Models\Producto::findOrFail($item['id']);
             $producto->decrement('stock', $item['cantidad']);
 
-            Transaccion::create([
-                'id_us'         => auth()->id(),
+            \App\Models\Transaccion::create([
+                'id_us'         => $user->id,
                 'id_prod'       => $item['id'],
                 'cantidad'      => $item['cantidad'],
                 'precio_unidad' => $item['precio'],
@@ -94,6 +104,12 @@ class CarritoController extends Controller
         }
 
         session()->forget('carrito');
-        return redirect()->route('economato')->with('success', '✓ Pedido confirmado correctamente.');
+
+        $saldoRestante = $user->fresh()->saldo;
+        $mensaje = $saldoRestante < 0
+            ? "✓ Pedido confirmado. Tu saldo actual es {$saldoRestante}€ (deuda pendiente)."
+            : "✓ Pedido confirmado. Saldo restante: {$saldoRestante}€.";
+
+        return redirect()->route('economato')->with('success', $mensaje);
     }
 }

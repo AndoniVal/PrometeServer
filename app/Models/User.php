@@ -11,7 +11,15 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $fillable = ['nombre', 'edad', 'rol', 'password', 'email', 'avatar'];
+    protected $fillable = [
+        'nombre',
+        'email',
+        'password',
+        'rol',
+        'edad',
+        'avatar',
+        'saldo',
+    ];
 
     protected $hidden = [
         'password',
@@ -31,5 +39,10 @@ class User extends Authenticatable
     public function transacciones()
     {
         return $this->hasMany(Transaccion::class, 'id_us');
+    }
+
+    public function movimientosSaldo()
+    {
+        return $this->hasMany(MovimientoSaldo::class, 'id_us');
     }
 }
