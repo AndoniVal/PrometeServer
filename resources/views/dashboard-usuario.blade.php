@@ -57,10 +57,20 @@
             <div class="flex items-center gap-5 ml-4">
                 <a href="{{ route('economato') }}"     class="text-gray-400 hover:text-yellow-500 transition text-sm uppercase tracking-widest">Economato</a>
                 <a href="{{ route('transacciones') }}" class="text-gray-400 hover:text-yellow-500 transition text-sm uppercase tracking-widest">Mis pedidos</a>
+                <a href="{{ route('inventario') }}" class="text-gray-400 hover:text-yellow-500 transition text-sm uppercase tracking-widest">Inventario</a>
             </div>
         </div>
 
         <div class="flex items-center gap-4">
+
+            <div class="flex items-center gap-1.5 border border-gray-800 px-3 py-1.5">
+                <svg class="w-3.5 h-3.5 {{ $user->saldo < 0 ? 'text-red-400' : 'text-yellow-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                </svg>
+                <span class="text-xs font-medium font-syne {{ $user->saldo < 0 ? 'text-red-400' : 'text-yellow-500' }}">
+                    {{ number_format($user->saldo, 2) }}€
+                </span>
+            </div>
 
             {{-- Icono carrito --}}
             <a href="{{ route('carrito') }}" class="relative text-gray-400 hover:text-yellow-500 transition">
@@ -152,6 +162,21 @@
                 <div>
                     <h3 class="font-syne text-xl font-bold text-white">Mis Pedidos</h3>
                     <p class="text-gray-500 text-sm mt-1">Consulta el historial de tus compras</p>
+                </div>
+           </a>
+
+            {{-- Inventario --}}
+            <a href="{{ route('inventario') }}"
+               class="menu-card bg-gray-900 border border-gray-800 p-7 flex flex-col gap-5 fade-up d2">
+                <div class="flex items-start justify-between">
+                    <div class="card-icon w-14 h-14 bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-2xl">
+                        📦
+                    </div>
+                    <span class="card-arrow text-yellow-500 text-xl font-bold">→</span>
+                </div>
+                <div>
+                    <h3 class="font-syne text-xl font-bold text-white">Inventario</h3>
+                    <p class="text-gray-500 text-sm mt-1">Consulta y solicita préstamos de material</p>
                 </div>
             </a>
 
