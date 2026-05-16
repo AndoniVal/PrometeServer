@@ -75,6 +75,71 @@
     </nav>
 
     <main class="px-8 py-8 max-w-3xl mx-auto">
+            {{-- ── FOTO DE PERFIL ── --}}
+        <div class="bg-gray-900 border border-gray-800 mb-6">
+            <div class="px-6 py-4 border-b border-gray-800">
+                <h3 class="font-syne text-lg font-bold">Foto de Perfil</h3>
+                <p class="text-gray-500 text-xs mt-1">JPG, PNG o WEBP · Máximo 2 MB</p>
+            </div>
+            <div class="p-6">
+                <form method="POST" action="{{ route('mi-cuenta.avatar') }}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="flex items-center gap-6">
+                        {{-- Vista previa --}}
+                        <div class="shrink-0">
+                            @if($user->avatar)
+                                <img id="preview"
+                                    src="{{ Storage::url($user->avatar) }}"
+                                    alt="Avatar"
+                                    class="w-20 h-20 rounded-full object-cover border-2 border-yellow-500">
+                            @else
+                                <div id="preview-placeholder"
+                                    class="w-20 h-20 rounded-full bg-gray-800 border-2 border-gray-700 flex items-center justify-center text-2xl text-gray-500 font-syne font-bold">
+                                    {{ strtoupper(substr($user->nombre, 0, 1)) }}
+                                </div>
+                                <img id="preview" src="#" alt="Avatar"
+                                    class="w-20 h-20 rounded-full object-cover border-2 border-yellow-500 hidden">
+                            @endif
+                        </div>
+
+                        {{-- Input + botón --}}
+                        <div class="flex-1">
+                            <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Seleccionar imagen</label>
+                            <input type="file" name="avatar" accept="image/*" id="avatarInput"
+                                class="w-full bg-gray-800 border border-gray-700 text-gray-300 px-4 py-2.5 text-sm
+                                        file:mr-4 file:py-1 file:px-3 file:border-0
+                                        file:text-xs file:font-medium file:uppercase file:tracking-wider
+                                        file:bg-yellow-500 file:text-gray-950 hover:file:bg-yellow-400
+                                        focus:outline-none focus:border-yellow-500 transition">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end mt-4">
+                        <button type="submit"
+                            class="bg-yellow-500 text-gray-950 px-6 py-2.5 text-sm font-medium uppercase tracking-wider hover:bg-yellow-400 transition">
+                            Subir foto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {{-- Preview en tiempo real --}}
+        <script>
+            document.getElementById('avatarInput').addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    const img = document.getElementById('preview');
+                    const placeholder = document.getElementById('preview-placeholder');
+                    img.src = ev.target.result;
+                    img.classList.remove('hidden');
+                    if (placeholder) placeholder.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            });
+        </script>
 
         <div class="mb-8">
             <h2 class="font-syne text-3xl font-bold text-white">Mi Cuenta</h2>
