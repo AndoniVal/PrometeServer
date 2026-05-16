@@ -51,4 +51,18 @@ Route::middleware('auth')->group(function () {
     // Finanzas
     Route::get('/finanzas', [FinanzasController::class, 'index'])->name('finanzas');
     Route::post('/finanzas/saldo', [FinanzasController::class, 'gestionarSaldo'])->name('finanzas.saldo');
+
+    Route::get('/inventario', [MaterialController::class, 'inventarioWeb'])->name('inventario');
+    Route::post('/inventario/prestar', [MaterialController::class, 'solicitarPrestamo'])->name('inventario.prestar');
+    Route::post('/inventario/devolver', [MaterialController::class, 'devolverMaterial'])->name('inventario.devolver');
+    Route::post('/materiales', [MaterialController::class, 'storeMaterial'])->name('materiales.store');
+    Route::delete('/materiales/{id}', [MaterialController::class, 'destroyMaterial'])->name('materiales.destroy');
+
+    Route::post('/materiales/estado', [MaterialController::class, 'cambiarEstado'])->name('materiales.estado');
+
+    Route::post('/inventario/aprobar', [MaterialController::class, 'aprobarPrestamo'])->name('inventario.aprobar');
+    Route::post('/inventario/rechazar', [MaterialController::class, 'rechazarPrestamo'])->name('inventario.rechazar');
+
+    Route::get('/inventario/movimientos', [MaterialController::class, 'movimientos'])->name('inventario.movimientos');
+    
 });
