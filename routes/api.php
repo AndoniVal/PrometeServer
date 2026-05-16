@@ -18,7 +18,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 
     Route::apiResource('users', UserController::class);
-    Route::apiResource('materiales', MaterialController::class);
+    Route::get('materiales', [MaterialController::class, 'index']);
+    Route::get('materiales/{id}', [MaterialController::class, 'show']);
+    Route::get('materiales/usuario/{id_us}', [MaterialController::class, 'porUsuario']);
     //Route::apiResource('productos', ProductoController::class);
     Route::apiResource('prestamos', PrestamoController::class);
     Route::apiResource('transacciones', TransaccionController::class);

@@ -47,7 +47,7 @@ class AuthController extends Controller
     }
 
     // Muestra el dashboard
-    public function dashboard()
+   public function dashboard()
     {
         $user = Auth::user();
 
@@ -57,9 +57,14 @@ class AuthController extends Controller
             ->get();
 
         if ($user->rol === 'administrador') {
-            return view('dashboard', compact('user', 'ultimosMovimientos'));
+            $ultimosPrestamos = \App\Models\Prestamo::with(['usuario', 'material'])
+                ->orderBy('fecha', 'desc')
+                ->take(5)
+                ->get();
+
+            return view('dashboard', compact('user', 'ultimosMovimientos', 'ultimosPrestamos'));
         }
 
-        return view('dashboard-usuario', compact('user'));
+        return view('dashboard-usuario', compact('user', 'ultimosMovimientos'));
     }
 }
