@@ -25,6 +25,16 @@
                 <a href="{{ route('inventario') }}" class="text-gray-400 hover:text-yellow-500 transition text-sm uppercase tracking-widest">Inventario</a>
             </div>
         </div>
+        <div class="flex items-center gap-4">
+    <div class="flex items-center gap-1.5 border border-gray-800 px-3 py-1.5">
+        <svg class="w-3.5 h-3.5 {{ $user->saldo < 0 ? 'text-red-400' : 'text-yellow-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+        </svg>
+        <span class="text-xs font-medium font-syne {{ $user->saldo < 0 ? 'text-red-400' : 'text-yellow-500' }}">
+            {{ number_format($user->saldo, 2) }}€
+        </span>
+    </div>
+    <div class="relative" id="user-menu">
         <div class="relative" id="user-menu">
             <button onclick="toggleDropdown()" class="flex items-center gap-3 focus:outline-none group">
                 <div class="w-9 h-9 rounded-full overflow-hidden border-2 border-gray-700 group-hover:border-yellow-500 transition">
@@ -53,7 +63,6 @@
                     </a>
                 </div>
                 <div class="border-t border-gray-800 py-1">
-                    $algo = "algo 2"
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-gray-800 hover:text-red-300 transition">

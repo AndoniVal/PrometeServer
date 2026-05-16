@@ -26,6 +26,18 @@
             </div>
         </div>
         <div class="flex items-center gap-4">
+
+            {{-- Saldo --}}
+            <div class="flex items-center gap-1.5 border border-gray-800 px-3 py-1.5">
+                <svg class="w-3.5 h-3.5 {{ $user->saldo < 0 ? 'text-red-400' : 'text-yellow-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                </svg>
+                <span class="text-xs font-medium font-syne {{ $user->saldo < 0 ? 'text-red-400' : 'text-yellow-500' }}">
+                    {{ number_format($user->saldo, 2) }}€
+                </span>
+            </div>
+
+            {{-- Icono carrito --}}
             <a href="{{ route('carrito') }}" class="relative text-yellow-500">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -37,6 +49,8 @@
                 </span>
                 @endif
             </a>
+
+            {{-- Avatar dropdown --}}
             <div class="relative" id="user-menu">
                 <button onclick="toggleDropdown()" class="flex items-center gap-3 focus:outline-none group">
                     <div class="w-9 h-9 rounded-full overflow-hidden border-2 border-gray-700 group-hover:border-yellow-500 transition">
@@ -111,10 +125,9 @@
         <div class="bg-gray-900 border border-gray-800 mb-6">
             @foreach($carrito as $item)
             <div class="flex items-center gap-4 px-6 py-4 border-b border-gray-800/50">
-                {{-- Imagen --}}
                 <div class="w-16 h-16 bg-gray-800 flex-shrink-0 overflow-hidden">
                     @if($item['imagen'])
-                        <img src="{{ $item['imagen'] }}" alt="{{ $item['nombre'] }}" class="w-full h-full object-cover">
+                        <img src="{{ asset('storage/' . $item['imagen']) }}" alt="{{ $item['nombre'] }}" class="w-full h-full object-cover">
                     @else
                         <div class="w-full h-full flex items-center justify-center text-gray-700">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -123,22 +136,14 @@
                         </div>
                     @endif
                 </div>
-
-                {{-- Info --}}
                 <div class="flex-1">
                     <p class="font-syne font-bold text-white">{{ $item['nombre'] }}</p>
                     <p class="text-gray-500 text-xs mt-0.5">{{ number_format($item['precio'], 2) }}€ / unidad</p>
                 </div>
-
-                {{-- Cantidad --}}
                 <span class="text-gray-400 text-sm">x{{ $item['cantidad'] }}</span>
-
-                {{-- Subtotal --}}
                 <span class="font-syne font-bold text-yellow-500 w-20 text-right">
                     {{ number_format($item['precio'] * $item['cantidad'], 2) }}€
                 </span>
-
-                {{-- Eliminar --}}
                 <form method="POST" action="{{ route('carrito.eliminar', $item['id']) }}">
                     @csrf
                     @method('DELETE')
@@ -149,10 +154,34 @@
             </div>
             @endforeach
 
-            {{-- Total --}}
-            <div class="px-6 py-4 flex justify-between items-center">
-                <span class="text-gray-400 uppercase tracking-widest text-xs">Total</span>
+            {{-- Total pedido --}}
+            <div class="px-6 py-4 border-b border-gray-800 flex justify-between items-center">
+                <span class="text-gray-400 uppercase tracking-widest text-xs">Total pedido</span>
                 <span class="font-syne text-2xl font-bold text-white">{{ number_format($total, 2) }}€</span>
+            </div>
+
+            {{-- Resumen saldo --}}
+            <div class="px-6 py-4 bg-gray-800/50">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-gray-400 text-xs uppercase tracking-widest">Saldo actual</span>
+                    <span class="font-syne font-bold {{ $user->saldo < 0 ? 'text-red-400' : 'text-yellow-500' }}">
+                        {{ number_format($user->saldo, 2) }}€
+                    </span>
+                </div>
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-gray-400 text-xs uppercase tracking-widest">Este pedido</span>
+                    <span class="text-white font-medium">− {{ number_format($total, 2) }}€</span>
+                </div>
+                <div class="border-t border-gray-700 pt-2 mt-2 flex justify-between items-center">
+                    <span class="text-gray-400 text-xs uppercase tracking-widest">Saldo tras compra</span>
+                    @php $saldoTras = $user->saldo - $total; @endphp
+                    <span class="font-syne font-bold text-lg {{ $saldoTras < 0 ? 'text-red-400' : 'text-green-400' }}">
+                        {{ number_format($saldoTras, 2) }}€
+                    </span>
+                </div>
+                @if($saldoTras < 0)
+                <p class="text-red-500 text-xs mt-2">⚠ Esta compra generará una deuda de {{ number_format(abs($saldoTras), 2) }}€</p>
+                @endif
             </div>
         </div>
 
