@@ -15,14 +15,14 @@ class ProductoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255',
-            'tipo'   => 'required|string|max:255',
-            'stock'  => 'required|integer|min:0',
-            'precio' => 'required|numeric|min:0',
-            'imagen' => 'nullable|image|max:2048',
+            'nombre'      => 'required|string|max:255',
+            'descripcion' => 'required|string|max:255',
+            'stock'       => 'required|integer|min:0',
+            'precio'      => 'required|numeric|min:0',
+            'imagen'      => 'nullable|file|max:5120',
         ]);
 
-        $data = $request->only('nombre', 'tipo', 'stock', 'precio');
+        $data = $request->only('nombre', 'descripcion', 'stock', 'precio');
 
         if ($request->hasFile('imagen')) {
             $data['imagen'] = $request->file('imagen')->store('productos', 'public');
