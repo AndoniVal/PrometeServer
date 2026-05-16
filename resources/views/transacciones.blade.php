@@ -27,6 +27,15 @@
                 @endif
             </div>
         </div>
+        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-1.5 border border-gray-800 px-3 py-1.5">
+            <svg class="w-3.5 h-3.5 {{ $user->saldo < 0 ? 'text-red-400' : 'text-yellow-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+            </svg>
+            <span class="text-xs font-medium font-syne {{ $user->saldo < 0 ? 'text-red-400' : 'text-yellow-500' }}">
+                {{ number_format($user->saldo, 2) }}€
+            </span>
+        </div>
         <div class="relative" id="user-menu">
             <button onclick="toggleDropdown()" class="flex items-center gap-3 focus:outline-none group">
                 <div class="w-9 h-9 rounded-full overflow-hidden border-2 border-gray-700 group-hover:border-yellow-500 transition">
@@ -97,7 +106,7 @@
                             <td class="px-6 py-4 text-gray-400">{{ \Carbon\Carbon::parse($t->fecha)->format('d/m/Y H:i') }}</td>
                             <td class="px-6 py-4 text-white">{{ $t->usuario->nombre }}</td>
                             <td class="px-6 py-4 font-medium text-white">{{ $t->producto->nombre }}</td>
-                            <td class="px-6 py-4 text-gray-400">{{ $t->producto->tipo }}</td>
+                            <td class="px-6 py-4 text-gray-400">{{ $t->producto->descripcion }}</td>
                             <td class="px-6 py-4"><span class="text-yellow-400 font-medium">{{ $t->cantidad }}</span></td>
                         </tr>
                         @empty
