@@ -29,6 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/productos', [ProductoController::class, 'store'])->name('productos.store');
     Route::put('/productos/{id}', [ProductoController::class, 'update'])->name('productos.update');
     Route::delete('/productos/{id}', [ProductoController::class, 'destroy'])->name('productos.destroy');
+    Route::post('/stock/añadir', [ProductoController::class, 'añadirStock'])->name('stock.añadir');
+    Route::post('/stock/eliminar', [ProductoController::class, 'eliminarStock'])->name('stock.eliminar');
 
     // Inventario
     Route::get('/inventario', [MaterialController::class, 'inventario'])->name('inventario');
@@ -39,24 +41,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/mi-cuenta/password', [UserController::class, 'cambiarPassword'])->name('mi-cuenta.password');
     Route::post('/mi-cuenta/avatar', [UserController::class, 'subirAvatar'])->name('mi-cuenta.avatar');
 
+    // Carrito
     Route::get('/carrito', [CarritoController::class, 'ver'])->name('carrito');
     Route::post('/carrito/agregar', [CarritoController::class, 'agregar'])->name('carrito.agregar');
     Route::delete('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
     Route::post('/carrito/vaciar', [CarritoController::class, 'vaciar'])->name('carrito.vaciar');
     Route::post('/carrito/confirmar', [CarritoController::class, 'confirmar'])->name('carrito.confirmar');
 
-    Route::get('/carrito', [CarritoController::class, 'ver'])->name('carrito');
-    Route::post('/carrito/agregar', [CarritoController::class, 'agregar'])->name('carrito.agregar');
-    Route::delete('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
-    Route::post('/carrito/vaciar', [CarritoController::class, 'vaciar'])->name('carrito.vaciar');
-    Route::post('/carrito/confirmar', [CarritoController::class, 'confirmar'])->name('carrito.confirmar');
-
-    Route::get('/finanzas', [FinanzasController::class, 'index'])
-    ->name('finanzas')
-    ->middleware('auth');
-
-    Route::post('/stock/añadir', [ProductoController::class, 'añadirStock'])->name('stock.añadir');
-    Route::post('/stock/eliminar', [ProductoController::class, 'eliminarStock'])->name('stock.eliminar');
-
-    
+    // Finanzas
+    Route::get('/finanzas', [FinanzasController::class, 'index'])->name('finanzas');
+    Route::post('/finanzas/saldo', [FinanzasController::class, 'gestionarSaldo'])->name('finanzas.saldo');
 });

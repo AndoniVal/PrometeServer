@@ -38,6 +38,15 @@
                 </span>
                 @endif
             </a>
+            {{-- Saldo --}}
+            <div class="flex items-center gap-1.5 border border-gray-800 px-3 py-1.5">
+                <svg class="w-3.5 h-3.5 {{ $user->saldo < 0 ? 'text-red-400' : 'text-yellow-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                </svg>
+                <span class="text-xs font-medium font-syne {{ $user->saldo < 0 ? 'text-red-400' : 'text-yellow-500' }}">
+                    {{ number_format($user->saldo, 2) }}€
+                </span>
+            </div>
             <div class="relative" id="user-menu">
                 <button onclick="toggleDropdown()" class="flex items-center gap-3 focus:outline-none group">
                     <div class="w-9 h-9 rounded-full overflow-hidden border-2 border-gray-700 group-hover:border-yellow-500 transition">
@@ -130,7 +139,7 @@
             <div onclick="abrirModalProducto(
                     {{ $producto->id }},
                     '{{ addslashes($producto->nombre) }}',
-                    '{{ addslashes($producto->tipo) }}',
+                    '{{ addslashes($producto->descripcion) }}',
                     {{ $producto->stock }},
                     {{ $producto->precio }},
                     '{{ $producto->imagen ? asset('storage/' . $producto->imagen) : '' }}'
@@ -157,7 +166,7 @@
                 </div>
                 <div class="p-4">
                     <p class="font-syne font-bold text-white text-sm mb-1">{{ $producto->nombre }}</p>
-                    <p class="text-gray-500 text-xs mb-3">{{ $producto->tipo }}</p>
+                    <p class="text-gray-500 text-xs mb-3">{{ $producto->descripcion }}</p>
                     <div class="flex justify-between items-center">
                         <span class="font-syne text-yellow-500 font-bold">{{ number_format($producto->precio, 2) }}€</span>
                         <span class="text-gray-600 text-xs">{{ $producto->stock }} uds.</span>
@@ -332,8 +341,8 @@
                         <input type="text" name="nombre" required class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2.5 focus:outline-none focus:border-yellow-500">
                     </div>
                     <div class="mb-4">
-                        <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Tipo</label>
-                        <input type="text" name="tipo" required class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2.5 focus:outline-none focus:border-yellow-500">
+                        <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Descripción</label>
+                        <input type="text" name="descripcion" required class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2.5 focus:outline-none focus:border-yellow-500">
                     </div>
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <div>
@@ -403,7 +412,7 @@
                     <span class="text-white text-sm flex-1 truncate">{{ $producto->nombre }}</span>
                     <input type="number" name="stock" value="{{ $producto->stock }}" min="0" class="w-24 bg-gray-800 border border-gray-700 text-white px-3 py-1.5 text-sm focus:outline-none focus:border-yellow-500">
                     <input type="hidden" name="nombre" value="{{ $producto->nombre }}">
-                    <input type="hidden" name="tipo" value="{{ $producto->tipo }}">
+                    <input type="hidden" name="tipo" value="{{ $producto->descripcion }}">
                     <input type="hidden" name="precio" value="{{ $producto->precio }}">
                     <button type="submit" class="bg-yellow-500 text-gray-950 px-3 py-1.5 text-xs font-medium uppercase hover:bg-yellow-400 transition">OK</button>
                 </form>
@@ -430,7 +439,7 @@
                         <span class="text-gray-500 text-xs">€</span>
                     </div>
                     <input type="hidden" name="nombre" value="{{ $producto->nombre }}">
-                    <input type="hidden" name="tipo" value="{{ $producto->tipo }}">
+                    <input type="hidden" name="tipo" value="{{ $producto->descripcion }}">
                     <input type="hidden" name="stock" value="{{ $producto->stock }}">
                     <button type="submit" class="bg-yellow-500 text-gray-950 px-3 py-1.5 text-xs font-medium uppercase hover:bg-yellow-400 transition">OK</button>
                 </form>
