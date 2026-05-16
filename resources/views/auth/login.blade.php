@@ -6,8 +6,8 @@
     <title>Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-
+<body class="flex items-center justify-center min-h-screen bg-center bg-no-repeat"
+      style="background-image: url('{{ asset('imagenes/PrometePuñal.png') }}'); background-size: 40%; background-color: #F5DDC4;">
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
 
         <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Iniciar Sesión</h1>
