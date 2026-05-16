@@ -41,9 +41,9 @@ class ProductoController extends Controller
 
     public function update(Request $request, $id)
     {
-        $producto = Producto::findOrFail($id);
-        $producto->update($request->all());
-        return response()->json($producto);
+    $producto = Producto::findOrFail($id);
+    $producto->update($request->only('nombre', 'descripcion', 'stock', 'precio'));
+    return back()->with('success', '✓ Producto actualizado correctamente.');
     }
 
     public function destroy($id)

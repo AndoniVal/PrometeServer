@@ -135,6 +135,13 @@
             </div>
         </div>
 
+        {{-- ── BUSCADOR DE PRODUCTOS ── --}}
+        <div class="mb-5">
+            <input type="text" id="buscador-productos" placeholder="Buscar producto..."
+                onkeyup="filtrarProductos()"
+                class="w-full bg-gray-900 border border-gray-800 text-gray-200 text-sm px-4 py-2.5 focus:outline-none focus:border-yellow-500">
+        </div>
+
         {{-- ── GRID DE PRODUCTOS ── --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-8">
             @forelse($productos as $producto)
@@ -146,7 +153,10 @@
                     {{ $producto->precio }},
                     '{{ $producto->imagen ? asset('storage/' . $producto->imagen) : '' }}'
                 )"
+                data-nombre="{{ strtolower($producto->nombre) }}"
                 class="bg-gray-900 border border-gray-800 hover:border-yellow-500/40 transition cursor-pointer group">
+
+
                 <div class="aspect-square bg-gray-800 overflow-hidden relative">
                     @if($producto->imagen)
                         <img src="{{ asset('storage/' . $producto->imagen) }}"
@@ -182,6 +192,7 @@
             </div>
             @endforelse
         </div>
+
 
         {{-- ── MIS ÚLTIMOS MOVIMIENTOS ── --}}
         <div class="bg-gray-900 border border-gray-800">
@@ -611,7 +622,13 @@
 
         document.getElementById('modal-producto').addEventListener('click', function(e) {
             if (e.target === this) cerrarModalProducto();
-        });
+        })
+        function filtrarProductos() {
+            const input = document.getElementById('buscador-productos').value.toLowerCase();
+            document.querySelectorAll('[data-nombre]').forEach(card => {
+                card.style.display = card.dataset.nombre.includes(input) ? '' : 'none';
+            });
+        }
     </script>
 
 </body>
