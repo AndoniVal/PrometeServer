@@ -9,61 +9,119 @@
     <style>
         body { font-family: 'DM Sans', sans-serif; }
         .font-syne { font-family: 'Syne', sans-serif; }
+
+        :root {
+            --color-card:         rgba(224, 223, 215, 0.82);
+            --color-card-hover:   rgba(224, 223, 215, 0.95);
+            --color-border:       rgba(102, 100, 96, 0.5);
+            --color-border-inner: rgba(102, 100, 96, 0.2);
+            --color-text:         rgba(97, 97, 95);
+            --color-text-soft:    rgba(97, 97, 95, 0.8);
+            --color-text-muted:   rgba(97, 97, 95, 0.55);
+            --color-accent:       rgba(97, 97, 95);
+            --color-danger:       #DC2626;
+        }
+
+        .card { background-color: var(--color-card); border: 1px solid var(--color-border); border-radius: 0.6rem; color: var(--color-text); backdrop-filter: blur(4px); }
+        .card-header { border-bottom: 1px solid var(--color-border-inner); padding: 1rem 1.5rem; }
+        .card-title { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--color-text); }
+        .card-subtitle { font-size: 0.7rem; color: var(--color-text-muted); margin-top: 0.15rem; }
+
+        .form-input { width: 100%; background-color: rgba(102,100,96,0.08); border: 1px solid var(--color-border); border-radius: 0.35rem; color: var(--color-text); padding: 0.6rem 1rem; font-size: 0.875rem; outline: none; transition: border-color 0.15s; }
+        .form-input:focus { border-color: var(--color-accent); }
+        .form-label { display: block; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-muted); margin-bottom: 0.4rem; }
+
+        .btn-primary { background-color: #1C1C1C; color: #F0D69C; padding: 0.6rem 1.5rem; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; border-radius: 0.35rem; border: 1px solid #333; transition: background-color 0.15s; cursor: pointer; }
+        .btn-primary:hover { background-color: #333; }
+
+        .dropdown { background-color: #3A3836; border: 1px solid var(--color-border); border-radius: 0.5rem; }
+        .dropdown-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 1rem; font-size: 0.875rem; color: rgba(255,255,255,0.65); transition: background-color 0.15s, color 0.15s; }
+        .dropdown-item:hover { background-color: rgba(255,255,255,0.08); color: #fff; }
+        .dropdown-item.danger { color: #DC2626; }
+        .dropdown-divider { border-top: 1px solid rgba(255,255,255,0.1); }
+
+        .saldo-pill { display: flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.75rem; border: 1px solid rgba(212,184,122,0.35); border-radius: 999px; background-color: rgba(212,184,122,0.1); font-size: 0.72rem; font-weight: 600; font-family: 'Syne', sans-serif; }
+        .saldo-ok     { color: #D4B87A; }
+        .saldo-danger { color: #DC2626; }
+
+        .page-title    { font-family: 'Syne', sans-serif; font-size: 1.875rem; font-weight: 700; color: var(--color-text); }
+        .page-subtitle { font-size: 0.875rem; color: var(--color-text-muted); margin-top: 0.25rem; }
+
+        .field-readonly { width: 100%; background-color: rgba(102,100,96,0.04); border: 1px solid rgba(102,100,96,0.2); border-radius: 0.35rem; color: var(--color-text-muted); padding: 0.6rem 1rem; font-size: 0.875rem; }
+
+        .saldo-grande-ok     { font-family: 'Syne', sans-serif; font-size: 2.25rem; font-weight: 700; color: #2D6A4F; }
+        .saldo-grande-danger { font-family: 'Syne', sans-serif; font-size: 2.25rem; font-weight: 700; color: #DC2626; }
+        .saldo-aviso-ok      { font-size: 0.72rem; color: var(--color-text-muted); margin-top: 0.5rem; }
+        .saldo-aviso-danger  { font-size: 0.72rem; color: #DC2626; margin-top: 0.5rem; }
+
+        input[type="file"]::file-selector-button {
+            background-color: #1C1C1C;
+            color: #F0D69C;
+            border: 1px solid #333;
+            border-radius: 0.35rem;
+            padding: 0.4rem 1rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: background-color 0.15s;
+            margin-right: 1rem;
+        }
+        input[type="file"]::file-selector-button:hover {
+            background-color: #333;
+        }
+
     </style>
 </head>
-<body class="bg-gray-950 text-gray-100 min-h-screen">
+<body class="min-h-screen" style="background-color: #F5DDC4; background-image: url('{{ asset('imagenes/PrometePuñal.png') }}'); background-size: 30%; background-repeat: no-repeat; background-position: center; background-attachment: fixed;">
 
-    {{-- ── NAVBAR ── --}}
-    <nav class="bg-gray-900 border-b border-gray-800 px-8 py-4 flex justify-between items-center sticky top-0 z-50">
+    {{-- NAVBAR --}}
+    <nav style="background-color: #1C1C1C; border-bottom: 1px solid #333333;" class="px-8 py-4 flex justify-between items-center sticky top-0 z-50 shadow-md">
         <div class="flex items-center gap-6">
-            <a href="{{ route('dashboard') }}" class="font-syne text-xl font-bold text-white hover:opacity-80 transition">
-                Promet<span class="text-yellow-500">e</span>
-                <span class="text-gray-500 font-normal text-base ml-2">/ Mi Cuenta</span>
+            <a href="{{ route('dashboard') }}" class="font-syne text-xl font-bold hover:opacity-80 transition" style="color: #F0D69C;">
+                Promet<span style="color: #D4B87A;">e</span>
+                <span class="font-normal text-base ml-2" style="color: rgba(212,184,122,0.5);">/ Mi Cuenta</span>
             </a>
         </div>
         <div class="flex items-center gap-4">
-
-            {{-- Saldo --}}
-            <div class="flex items-center gap-1.5 border border-gray-800 px-3 py-1.5">
-                <svg class="w-3.5 h-3.5 {{ $user->saldo < 0 ? 'text-red-400' : 'text-yellow-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="saldo-pill {{ $user->saldo < 0 ? 'saldo-danger' : 'saldo-ok' }}">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
                 </svg>
-                <span class="text-xs font-medium font-syne {{ $user->saldo < 0 ? 'text-red-400' : 'text-yellow-500' }}">
-                    {{ number_format($user->saldo, 2) }}€
-                </span>
+                {{ number_format($user->saldo, 2) }}€
             </div>
-
             <div class="relative" id="user-menu">
-                <button onclick="toggleDropdown()" class="flex items-center gap-3 focus:outline-none group">
-                    <div class="w-9 h-9 rounded-full overflow-hidden border-2 border-gray-700 group-hover:border-yellow-500 transition">
+                <button onclick="toggleDropdown()" class="flex items-center gap-3 focus:outline-none">
+                    <div class="w-9 h-9 rounded-full overflow-hidden border-2" style="border-color: #D4B87A;">
                         @if($user->avatar)
                             <img src="{{ asset('storage/' . $user->avatar) }}" alt="{{ $user->nombre }}" class="w-full h-full object-cover">
                         @else
-                            <div class="w-full h-full bg-yellow-500/20 flex items-center justify-center">
-                                <span class="text-yellow-500 text-xs font-bold font-syne">{{ strtoupper(substr($user->nombre, 0, 2)) }}</span>
+                            <div class="w-full h-full flex items-center justify-center" style="background-color: rgba(212,184,122,0.2);">
+                                <span class="font-syne text-xs font-bold" style="color: #D4B87A;">{{ strtoupper(substr($user->nombre, 0, 2)) }}</span>
                             </div>
                         @endif
                     </div>
-                    <span class="text-gray-400 text-sm hidden md:block">{{ $user->nombre }}</span>
-                    <svg id="chevron" class="w-4 h-4 text-gray-500 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span class="text-sm hidden md:block" style="color: #D4B87A;">{{ $user->nombre }}</span>
+                    <svg id="chevron" class="w-4 h-4 transition-transform duration-200" style="color: #D4B87A;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                     </svg>
                 </button>
-                <div id="dropdown" class="hidden absolute right-0 mt-3 w-52 bg-gray-900 border border-gray-700 shadow-xl z-50">
-                    <div class="px-4 py-3 border-b border-gray-800">
-                        <p class="text-white text-sm font-medium">{{ $user->nombre }}</p>
-                        <p class="text-gray-500 text-xs mt-0.5">{{ ucfirst($user->rol) }}</p>
+                <div id="dropdown" class="dropdown hidden absolute right-0 mt-3 w-52 shadow-xl z-50">
+                    <div class="px-4 py-3 dropdown-divider">
+                        <p class="text-sm font-medium" style="color: #fff;">{{ $user->nombre }}</p>
+                        <p class="text-xs mt-0.5" style="color: rgba(255,255,255,0.45);">{{ ucfirst($user->rol) }}</p>
                     </div>
                     <div class="py-1">
-                        <a href="{{ route('mi-cuenta') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-yellow-500 hover:bg-gray-800 transition">
+                        <a href="{{ route('mi-cuenta') }}" class="dropdown-item" style="color: #D4B87A;">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                             Mi cuenta
                         </a>
                     </div>
-                    <div class="border-t border-gray-800 py-1">
+                    <div class="py-1 dropdown-divider">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-gray-800 hover:text-red-300 transition">
+                            <button type="submit" class="dropdown-item danger w-full">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                                 Cerrar sesión
                             </button>
@@ -75,126 +133,61 @@
     </nav>
 
     <main class="px-8 py-8 max-w-3xl mx-auto">
-            {{-- ── FOTO DE PERFIL ── --}}
-        <div class="bg-gray-900 border border-gray-800 mb-6">
-            <div class="px-6 py-4 border-b border-gray-800">
-                <h3 class="font-syne text-lg font-bold">Foto de Perfil</h3>
-                <p class="text-gray-500 text-xs mt-1">JPG, PNG o WEBP · Máximo 2 MB</p>
-            </div>
-            <div class="p-6">
-                <form method="POST" action="{{ route('mi-cuenta.avatar') }}" enctype="multipart/form-data">
-                    @csrf
-                    <div class="flex items-center gap-6">
-                        {{-- Vista previa --}}
-                        <div class="shrink-0">
-                            @if($user->avatar)
-                                <img id="preview"
-                                    src="{{ Storage::url($user->avatar) }}"
-                                    alt="Avatar"
-                                    class="w-20 h-20 rounded-full object-cover border-2 border-yellow-500">
-                            @else
-                                <div id="preview-placeholder"
-                                    class="w-20 h-20 rounded-full bg-gray-800 border-2 border-gray-700 flex items-center justify-center text-2xl text-gray-500 font-syne font-bold">
-                                    {{ strtoupper(substr($user->nombre, 0, 1)) }}
-                                </div>
-                                <img id="preview" src="#" alt="Avatar"
-                                    class="w-20 h-20 rounded-full object-cover border-2 border-yellow-500 hidden">
-                            @endif
-                        </div>
-
-                        {{-- Input + botón --}}
-                        <div class="flex-1">
-                            <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Seleccionar imagen</label>
-                            <input type="file" name="avatar" accept="image/*" id="avatarInput"
-                                class="w-full bg-gray-800 border border-gray-700 text-gray-300 px-4 py-2.5 text-sm
-                                        file:mr-4 file:py-1 file:px-3 file:border-0
-                                        file:text-xs file:font-medium file:uppercase file:tracking-wider
-                                        file:bg-yellow-500 file:text-gray-950 hover:file:bg-yellow-400
-                                        focus:outline-none focus:border-yellow-500 transition">
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end mt-4">
-                        <button type="submit"
-                            class="bg-yellow-500 text-gray-950 px-6 py-2.5 text-sm font-medium uppercase tracking-wider hover:bg-yellow-400 transition">
-                            Subir foto
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        {{-- Preview en tiempo real --}}
-        <script>
-            document.getElementById('avatarInput').addEventListener('change', function (e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = function (ev) {
-                    const img = document.getElementById('preview');
-                    const placeholder = document.getElementById('preview-placeholder');
-                    img.src = ev.target.result;
-                    img.classList.remove('hidden');
-                    if (placeholder) placeholder.classList.add('hidden');
-                };
-                reader.readAsDataURL(file);
-            });
-        </script>
 
         <div class="mb-8">
-            <h2 class="font-syne text-3xl font-bold text-white">Mi Cuenta</h2>
-            <p class="text-gray-400 text-sm mt-1">Gestiona tu perfil, datos personales y contraseña</p>
+            <h2 class="page-title">Mi Cuenta</h2>
+            <p class="page-subtitle">Gestiona tu perfil, datos personales y contraseña</p>
         </div>
 
         @if(session('success'))
-        <div class="mb-6 bg-green-900/30 border border-green-700 text-green-400 px-5 py-3 text-sm">{{ session('success') }}</div>
+        <div class="mb-6 px-5 py-3 text-sm rounded-md" style="background-color: rgba(45,106,79,0.15); border: 1px solid rgba(45,106,79,0.4); color: #2D6A4F;">{{ session('success') }}</div>
         @endif
         @if(session('success_pass'))
-        <div class="mb-6 bg-green-900/30 border border-green-700 text-green-400 px-5 py-3 text-sm">{{ session('success_pass') }}</div>
+        <div class="mb-6 px-5 py-3 text-sm rounded-md" style="background-color: rgba(45,106,79,0.15); border: 1px solid rgba(45,106,79,0.4); color: #2D6A4F;">{{ session('success_pass') }}</div>
         @endif
         @if($errors->any())
-        <div class="mb-6 bg-red-900/30 border border-red-700 text-red-400 px-5 py-3 text-sm">{{ $errors->first() }}</div>
+        <div class="mb-6 px-5 py-3 text-sm rounded-md" style="background-color: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.3); color: #DC2626;">{{ $errors->first() }}</div>
         @endif
 
-        {{-- ── CARTERA ── --}}
-        <div class="bg-gray-900 border border-gray-800 mb-6">
-            <div class="px-6 py-4 border-b border-gray-800">
-                <h3 class="font-syne text-lg font-bold">Mi Cartera</h3>
-                <p class="text-gray-500 text-xs mt-1">Saldo disponible para compras en el economato</p>
+        {{-- CARTERA --}}
+        <div class="card mb-6">
+            <div class="card-header">
+                <p class="card-title">Mi Cartera</p>
+                <p class="card-subtitle">Saldo disponible para compras en el economato</p>
             </div>
             <div class="p-6 flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-xs uppercase tracking-widest mb-1">Saldo actual</p>
-                    <p class="font-syne text-4xl font-bold {{ $user->saldo < 0 ? 'text-red-400' : 'text-yellow-500' }}">
+                    <p class="form-label">Saldo actual</p>
+                    <p class="{{ $user->saldo < 0 ? 'saldo-grande-danger' : 'saldo-grande-ok' }}">
                         {{ number_format($user->saldo, 2) }}€
                     </p>
                     @if($user->saldo < 0)
-                    <p class="text-red-500 text-xs mt-2">⚠ Tienes una deuda pendiente de {{ number_format(abs($user->saldo), 2) }}€</p>
+                    <p class="saldo-aviso-danger">Tienes una deuda pendiente de {{ number_format(abs($user->saldo), 2) }}€</p>
                     @else
-                    <p class="text-gray-600 text-xs mt-2">El saldo lo gestiona el administrador</p>
+                    <p class="saldo-aviso-ok">El saldo lo gestiona el administrador</p>
                     @endif
                 </div>
-                <div class="w-16 h-16 bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center">
-                    <svg class="w-8 h-8 {{ $user->saldo < 0 ? 'text-red-400' : 'text-yellow-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-16 h-16 flex items-center justify-center rounded-md" style="background-color: rgba(102,100,96,0.1); border: 1px solid var(--color-border);">
+                    <svg class="w-8 h-8" style="color: var(--color-text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
                     </svg>
                 </div>
             </div>
         </div>
 
-        {{-- ── AVATAR ── --}}
-        <div class="bg-gray-900 border border-gray-800 mb-6">
-            <div class="px-6 py-4 border-b border-gray-800">
-                <h3 class="font-syne text-lg font-bold">Foto de Perfil</h3>
-                <p class="text-gray-500 text-xs mt-1">JPG, PNG o GIF. Máximo 2MB.</p>
+        {{-- FOTO DE PERFIL --}}
+        <div class="card mb-6">
+            <div class="card-header">
+                <p class="card-title">Foto de Perfil</p>
+                <p class="card-subtitle">JPG, PNG o GIF · Máximo 2 MB</p>
             </div>
             <div class="p-6 flex items-center gap-6">
-                <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-700 flex-shrink-0">
+                <div class="w-20 h-20 rounded-full overflow-hidden border-2 flex-shrink-0" style="border-color: var(--color-border);">
                     @if($user->avatar)
                         <img id="avatar-preview" src="{{ asset('storage/' . $user->avatar) }}" alt="{{ $user->nombre }}" class="w-full h-full object-cover">
                     @else
-                        <div id="avatar-initials" class="w-full h-full bg-yellow-500/20 flex items-center justify-center">
-                            <span class="text-yellow-500 text-2xl font-bold font-syne">{{ strtoupper(substr($user->nombre, 0, 2)) }}</span>
+                        <div id="avatar-initials" class="w-full h-full flex items-center justify-center" style="background-color: rgba(102,100,96,0.15);">
+                            <span class="font-syne text-2xl font-bold" style="color: var(--color-text-muted);">{{ strtoupper(substr($user->nombre, 0, 2)) }}</span>
                         </div>
                         <img id="avatar-preview" src="" alt="" class="w-full h-full object-cover hidden">
                     @endif
@@ -203,84 +196,72 @@
                     @csrf
                     <div class="flex gap-3 items-center">
                         <input type="file" name="avatar" id="avatar-input" accept="image/*" onchange="previewAvatar(this)"
-                            class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-xs file:font-medium file:uppercase file:tracking-wider file:bg-yellow-500 file:text-gray-950 hover:file:bg-yellow-400 file:cursor-pointer file:transition">
-                        <button type="submit" class="flex-shrink-0 bg-yellow-500 text-gray-950 px-5 py-2 text-xs font-medium uppercase tracking-wider hover:bg-yellow-400 transition">
-                            Subir
-                        </button>
+                        class="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:border-0 file:text-xs file:font-medium file:uppercase file:tracking-wider file:rounded file:cursor-pointer file:transition"
+                        style="color: var(--color-text-muted); --tw-file-bg: #1C1C1C;"
+                        onmouseover="">
+                        <button type="submit" class="btn-primary flex-shrink-0">Subir</button>
                     </div>
                 </form>
             </div>
         </div>
 
-        {{-- ── DATOS PERSONALES ── --}}
-        <div class="bg-gray-900 border border-gray-800 mb-6">
-            <div class="px-6 py-4 border-b border-gray-800">
-                <h3 class="font-syne text-lg font-bold">Datos Personales</h3>
-                <p class="text-gray-500 text-xs mt-1">Actualiza tu nombre, email y edad</p>
+        {{-- DATOS PERSONALES --}}
+        <div class="card mb-6">
+            <div class="card-header">
+                <p class="card-title">Datos Personales</p>
+                <p class="card-subtitle">Actualiza tu nombre, email y edad</p>
             </div>
             <div class="p-6">
                 <form method="POST" action="{{ route('mi-cuenta.actualizar') }}">
                     @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Nombre</label>
-                            <input type="text" name="nombre" value="{{ old('nombre', $user->nombre) }}" required
-                                class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2.5 focus:outline-none focus:border-yellow-500 transition">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" name="nombre" value="{{ old('nombre', $user->nombre) }}" required class="form-input">
                         </div>
                         <div>
-                            <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Edad</label>
-                            <input type="number" name="edad" value="{{ old('edad', $user->edad) }}" min="1" max="120"
-                                class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2.5 focus:outline-none focus:border-yellow-500 transition">
+                            <label class="form-label">Edad</label>
+                            <input type="number" name="edad" value="{{ old('edad', $user->edad) }}" min="1" max="120" class="form-input">
                         </div>
                     </div>
                     <div class="mb-4">
-                        <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Email</label>
-                        <input type="email" name="email" value="{{ old('email', $user->email) }}" required
-                            class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2.5 focus:outline-none focus:border-yellow-500 transition">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" value="{{ old('email', $user->email) }}" required class="form-input">
                     </div>
                     <div class="mb-6">
-                        <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Rol</label>
-                        <div class="w-full bg-gray-800/50 border border-gray-700/50 text-gray-500 px-4 py-2.5 text-sm">
-                            {{ ucfirst($user->rol) }}
-                        </div>
+                        <label class="form-label">Rol</label>
+                        <div class="field-readonly">{{ ucfirst($user->rol) }}</div>
                     </div>
                     <div class="flex justify-end">
-                        <button type="submit" class="bg-yellow-500 text-gray-950 px-6 py-2.5 text-sm font-medium uppercase tracking-wider hover:bg-yellow-400 transition">
-                            Guardar cambios
-                        </button>
+                        <button type="submit" class="btn-primary">Guardar cambios</button>
                     </div>
                 </form>
             </div>
         </div>
 
-        {{-- ── CAMBIAR CONTRASEÑA ── --}}
-        <div class="bg-gray-900 border border-gray-800">
-            <div class="px-6 py-4 border-b border-gray-800">
-                <h3 class="font-syne text-lg font-bold">Cambiar Contraseña</h3>
-                <p class="text-gray-500 text-xs mt-1">Mínimo 8 caracteres</p>
+        {{-- CAMBIAR CONTRASENA --}}
+        <div class="card">
+            <div class="card-header">
+                <p class="card-title">Cambiar Contraseña</p>
+                <p class="card-subtitle">Mínimo 8 caracteres</p>
             </div>
             <div class="p-6">
                 <form method="POST" action="{{ route('mi-cuenta.password') }}">
                     @csrf
                     <div class="mb-4">
-                        <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Contraseña actual</label>
-                        <input type="password" name="password_actual" required
-                            class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2.5 focus:outline-none focus:border-yellow-500 transition">
+                        <label class="form-label">Contraseña actual</label>
+                        <input type="password" name="password_actual" required class="form-input">
                     </div>
                     <div class="mb-4">
-                        <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Nueva contraseña</label>
-                        <input type="password" name="password_nuevo" required
-                            class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2.5 focus:outline-none focus:border-yellow-500 transition">
+                        <label class="form-label">Nueva contraseña</label>
+                        <input type="password" name="password_nuevo" required class="form-input">
                     </div>
                     <div class="mb-6">
-                        <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Confirmar nueva contraseña</label>
-                        <input type="password" name="password_nuevo_confirmation" required
-                            class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2.5 focus:outline-none focus:border-yellow-500 transition">
+                        <label class="form-label">Confirmar nueva contraseña</label>
+                        <input type="password" name="password_nuevo_confirmation" required class="form-input">
                     </div>
                     <div class="flex justify-end">
-                        <button type="submit" class="bg-yellow-500 text-gray-950 px-6 py-2.5 text-sm font-medium uppercase tracking-wider hover:bg-yellow-400 transition">
-                            Actualizar contraseña
-                        </button>
+                        <button type="submit" class="btn-primary">Actualizar contraseña</button>
                     </div>
                 </form>
             </div>
@@ -291,7 +272,7 @@
     <script>
         function toggleDropdown() {
             const dropdown = document.getElementById('dropdown');
-            const chevron = document.getElementById('chevron');
+            const chevron  = document.getElementById('chevron');
             dropdown.classList.toggle('hidden');
             chevron.style.transform = dropdown.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
         }
@@ -306,7 +287,7 @@
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const preview = document.getElementById('avatar-preview');
+                    const preview  = document.getElementById('avatar-preview');
                     const initials = document.getElementById('avatar-initials');
                     preview.src = e.target.result;
                     preview.classList.remove('hidden');
