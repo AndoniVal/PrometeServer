@@ -6,9 +6,107 @@
     <title>Inventario — PROMETE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'DM Sans', sans-serif; }
+<style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: #F5DDC4 !important;
+            background-image: url('{{ asset('imagenes/PrometePuñal.png') }}') !important;
+            background-size: 30% !important;
+            background-repeat: no-repeat !important;
+            background-position: center !important;
+            background-attachment: fixed !important;
+            color: rgba(97, 97, 95) !important;
+        }
         .font-syne { font-family: 'Syne', sans-serif; }
+
+        :root {
+            --color-card:         rgba(224, 223, 215, 0.82);
+            --color-card-hover:   rgba(224, 223, 215, 0.95);
+            --color-border:       rgba(102, 100, 96, 0.5);
+            --color-border-inner: rgba(102, 100, 96, 0.2);
+            --color-text:         rgba(97, 97, 95);
+            --color-text-soft:    rgba(97, 97, 95, 0.8);
+            --color-text-muted:   rgba(97, 97, 95, 0.55);
+            --color-accent:       rgba(97, 97, 95);
+            --color-danger:       #DC2626;
+        }
+
+        /* ── CLASES BASE DE TRANSACCIONES ── */
+        .card { background-color: var(--color-card); border: 1px solid var(--color-border); border-radius: 0.6rem; backdrop-filter: blur(4px); }
+
+        .tabla th { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border-inner); padding: 0.75rem 1.5rem; text-align: left; }
+        .tabla td { padding: 1rem 1.5rem; border-bottom: 1px solid var(--color-border-inner); font-size: 0.875rem; }
+        .tabla tr:last-child td { border-bottom: none; }
+        .tabla tbody tr { transition: background-color 0.15s; }
+        .tabla tbody tr:hover { background-color: rgba(102,100,96,0.08); }
+        .td-main  { color: var(--color-text); }
+        .td-soft  { color: var(--color-text-soft); }
+        .td-muted { color: var(--color-text-muted); }
+        .td-accent { color: var(--color-accent); font-weight: 600; }
+
+        .buscador { background-color: var(--color-card); border: 1px solid var(--color-border); border-radius: 0.4rem; color: var(--color-text); padding: 0.65rem 1rem; font-size: 0.875rem; outline: none; backdrop-filter: blur(4px); transition: border-color 0.15s; }
+        .buscador:focus { border-color: var(--color-accent); }
+        .buscador::placeholder { color: var(--color-text-muted); }
+
+        .dropdown { background-color: #3A3836; border: 1px solid var(--color-border); border-radius: 0.5rem; }
+        .dropdown-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 1rem; font-size: 0.875rem; color: rgba(255,255,255,0.65); transition: background-color 0.15s, color 0.15s; }
+        .dropdown-item:hover { background-color: rgba(255,255,255,0.08); color: #fff; }
+        .dropdown-item.danger { color: #DC2626; }
+        .dropdown-divider { border-top: 1px solid rgba(255,255,255,0.1); }
+
+        .saldo-pill { display: flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.75rem; border: 1px solid rgba(212,184,122,0.35); border-radius: 999px; background-color: rgba(212,184,122,0.1); font-size: 0.72rem; font-weight: 600; font-family: 'Syne', sans-serif; }
+        .saldo-ok     { color: #D4B87A; }
+        .saldo-danger { color: #DC2626; }
+
+        /* ── ADAPTACIÓN AUTOMÁTICA PARA EL INVENTARIO ── */
+        nav { background-color: #1C1C1C !important; border-bottom: 1px solid #333333 !important; }
+
+        /* Forzar que las tarjetas de materiales y stats hereden el estilo claro */
+        main .bg-gray-900 {
+            background-color: var(--color-card) !important;
+            border: 1px solid var(--color-border) !important;
+            border-radius: 0.6rem !important;
+            backdrop-filter: blur(4px);
+            color: var(--color-text) !important;
+            transition: background-color 0.15s, border-color 0.15s;
+        }
+        main .bg-gray-900:hover {
+            background-color: var(--color-card-hover) !important;
+        }
+
+        /* Reajustar textos oscuros/atenuados en el nuevo fondo claro */
+        main h2, main h3, main h4, main .text-white { color: var(--color-text) !important; }
+        main p.text-gray-400, main .text-gray-400 { color: var(--color-text-soft) !important; }
+        main p.text-gray-500, main p.text-gray-600, main .text-gray-500 { color: var(--color-text-muted) !important; }
+
+        /* Contenedor de la foto del material */
+        main .aspect-square.bg-gray-800 {
+            background-color: rgba(102, 100, 96, 0.1) !important;
+        }
+
+        /* Tabla de últimos movimientos adaptada al estilo de Transacciones */
+        main table { width: 100%; border-collapse: collapse; }
+        main table tr { border-bottom: 1px solid var(--color-border-inner) !important; background: transparent !important; }
+        main table tr:last-child { border-bottom: none !important; }
+        main table th {
+            font-size: 0.65rem !important; text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--color-text-muted) !important; padding: 0.75rem 1.5rem !important; text-align: left;
+        }
+        main table td { padding: 1rem 1.5rem !important; font-size: 0.875rem; color: var(--color-text-soft) !important; }
+        main table tbody tr:hover { background-color: rgba(102,100,96,0.08) !important; }
+        main table td.text-white, main table td .text-white { color: var(--color-text) !important; font-weight: 500; }
+        main table td.text-gray-400 { color: var(--color-text-muted) !important; }
+
+        /* Mantener legibles los Modales en fondo oscuro para conservar enfoque */
+        #modal-material .bg-gray-900,
+        #modal-solicitudes .bg-gray-900,
+        #modal-admin-inv .bg-gray-900,
+        #modal-nuevo-material .bg-gray-900 {
+            background-color: #1C1C1C !important;
+            border: 1px solid #333333 !important;
+            color: #E5E7EB !important;
+        }
+        #modal-material h3, #modal-solicitudes h3, #modal-admin-inv h3 { color: #FFFFFF !important; }
     </style>
 </head>
 <body class="bg-gray-950 text-gray-100 min-h-screen">
