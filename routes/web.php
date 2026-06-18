@@ -9,6 +9,7 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\FinanzasController;
+use App\Http\Controllers\CalendarioController;
 
 Route::get('/', [PageController::class, 'index']);
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -18,6 +19,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 
+    // Google Calendar
+    Route::get('/auth/google/redirect', [CalendarioController::class, 'redirect'])->name('google.redirect');
+    Route::get('/auth/google/callback', [CalendarioController::class, 'callback'])->name('google.callback');
+    Route::get('/calendario', [CalendarioController::class, 'index'])->name('calendario');
     // Transacciones
     Route::get('/transacciones', [TransaccionController::class, 'transacciones'])->name('transacciones');
 

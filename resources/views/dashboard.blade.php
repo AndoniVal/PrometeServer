@@ -187,7 +187,7 @@
     </style>
 </head>
 <body class="min-h-screen" style="background-color: #F5DDC4; background-image: url('{{ asset('imagenes/PrometePuñal.png') }}'); background-size: 30%; background-repeat: no-repeat; background-position: center; background-attachment: fixed;">
-
+<a href="{{ route('google.redirect') }}">Conectar con Google</a>
     {{-- ── NAVBAR ── --}}
     <nav style="background-color: #1C1C1C; border-bottom: 1px solid #333333;" class="px-8 py-4 flex justify-between items-center sticky top-0 z-50 shadow-md">
         <div class="flex items-center gap-6">

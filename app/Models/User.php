@@ -45,4 +45,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(MovimientoSaldo::class, 'id_us');
     }
+
+    public function googleAccount()
+    {
+        return $this->hasOne(GoogleAccount::class);
+    }
 }
