@@ -40,17 +40,41 @@ class ProductoController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
+{
+    $request->validate([
+        'nombre'      => 'required|string|max:255',
+        'descripcion' => 'required|string|max:255',
+        'stock'       => 'required|integer|min:0',
+        'precio'      => 'required|numeric|min:0',
+        'imagen'      => 'nullable|file|max:5120',
+    ]);
+
     $producto = Producto::findOrFail($id);
-    $producto->update($request->only('nombre', 'descripcion', 'stock', 'precio'));
-    return back()->with('success', '✓ Producto actualizado correctamente.');
+    $data = $request->only('nombre', 'descripcion', 'stock', 'precio');
+
+    if ($request->hasFile('imagen')) {
+        // Borrar la imagen anterior para no acumular huérfanas en storage
+        if ($producto->imagen && \Storage::disk('public')->exists($producto->imagen)) {
+            \Storage::disk('public')->delete($producto->imagen);
+        }
+        $data['imagen'] = $request->file('imagen')->store('productos', 'public');
     }
 
-    public function destroy($id)
-    {
-        Producto::findOrFail($id)->delete();
-        return response()->json(['message' => 'Producto eliminado']);
+    $producto->update($data);
+    return back()->with('success', '✓ Producto actualizado correctamente.');
+}
+
+public function destroy($id)
+{
+    $producto = Producto::findOrFail($id);
+
+    if ($producto->imagen && \Storage::disk('public')->exists($producto->imagen)) {
+        \Storage::disk('public')->delete($producto->imagen);
     }
+
+    $producto->delete();
+    return back()->with('success', '✓ Producto eliminado correctamente.');
+}
 
     public function sinStock()
     {

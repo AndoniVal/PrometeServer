@@ -6,17 +6,8 @@
     <title>Inventario — PROMETE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background-color: #F5DDC4 !important;
-            background-image: url('{{ asset('imagenes/PrometePuñal.png') }}') !important;
-            background-size: 30% !important;
-            background-repeat: no-repeat !important;
-            background-position: center !important;
-            background-attachment: fixed !important;
-            color: rgba(97, 97, 95) !important;
-        }
+    <style>
+        body { font-family: 'DM Sans', sans-serif; }
         .font-syne { font-family: 'Syne', sans-serif; }
 
         :root {
@@ -31,22 +22,26 @@
             --color-danger:       #DC2626;
         }
 
-        /* ── CLASES BASE DE TRANSACCIONES ── */
-        .card { background-color: var(--color-card); border: 1px solid var(--color-border); border-radius: 0.6rem; backdrop-filter: blur(4px); }
+        .card { background-color: var(--color-card); border: 1px solid var(--color-border); border-radius: 0.6rem; color: var(--color-text); backdrop-filter: blur(4px); }
+        .card-header { border-bottom: 1px solid var(--color-border-inner); padding: 1rem 1.5rem; }
+        .card-title { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--color-text); }
+        .card-subtitle { font-size: 0.7rem; color: var(--color-text-muted); margin-top: 0.15rem; }
 
-        .tabla th { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border-inner); padding: 0.75rem 1.5rem; text-align: left; }
-        .tabla td { padding: 1rem 1.5rem; border-bottom: 1px solid var(--color-border-inner); font-size: 0.875rem; }
-        .tabla tr:last-child td { border-bottom: none; }
-        .tabla tbody tr { transition: background-color 0.15s; }
-        .tabla tbody tr:hover { background-color: rgba(102,100,96,0.08); }
-        .td-main  { color: var(--color-text); }
-        .td-soft  { color: var(--color-text-soft); }
-        .td-muted { color: var(--color-text-muted); }
-        .td-accent { color: var(--color-accent); font-weight: 600; }
+        .page-title    { font-family: 'Syne', sans-serif; font-size: 1.875rem; font-weight: 700; color: var(--color-text); }
+        .page-subtitle { font-size: 0.875rem; color: var(--color-text-muted); margin-top: 0.25rem; }
 
-        .buscador { background-color: var(--color-card); border: 1px solid var(--color-border); border-radius: 0.4rem; color: var(--color-text); padding: 0.65rem 1rem; font-size: 0.875rem; outline: none; backdrop-filter: blur(4px); transition: border-color 0.15s; }
-        .buscador:focus { border-color: var(--color-accent); }
-        .buscador::placeholder { color: var(--color-text-muted); }
+        .form-input { width: 100%; background-color: rgba(102,100,96,0.08); border: 1px solid var(--color-border); border-radius: 0.35rem; color: var(--color-text); padding: 0.6rem 1rem; font-size: 0.875rem; outline: none; transition: border-color 0.15s; }
+        .form-input:focus { border-color: var(--color-accent); }
+        .form-label { display: block; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-muted); margin-bottom: 0.4rem; }
+
+        .btn-primary { background-color: #1C1C1C; color: #F0D69C; padding: 0.6rem 1.5rem; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; border-radius: 0.35rem; border: 1px solid #333; transition: background-color 0.15s; cursor: pointer; }
+        .btn-primary:hover { background-color: #333; }
+        .btn-outline { background-color: transparent; color: var(--color-text-muted); padding: 0.6rem 1.5rem; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; border-radius: 0.35rem; border: 1px solid var(--color-border); transition: border-color 0.15s, color 0.15s; cursor: pointer; }
+        .btn-outline:hover { border-color: var(--color-accent); color: var(--color-text); }
+        .btn-ok { background-color: #2D6A4F; color: #fff; padding: 0.6rem 1.5rem; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; border-radius: 0.35rem; border: none; transition: opacity 0.15s; cursor: pointer; width: 100%; }
+        .btn-ok:hover { opacity: 0.85; }
+        .btn-danger { background-color: #DC2626; color: #fff; padding: 0.6rem 1.5rem; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; border-radius: 0.35rem; border: none; transition: opacity 0.15s; cursor: pointer; width: 100%; }
+        .btn-danger:hover { opacity: 0.85; }
 
         .dropdown { background-color: #3A3836; border: 1px solid var(--color-border); border-radius: 0.5rem; }
         .dropdown-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 1rem; font-size: 0.875rem; color: rgba(255,255,255,0.65); transition: background-color 0.15s, color 0.15s; }
@@ -58,111 +53,93 @@
         .saldo-ok     { color: #D4B87A; }
         .saldo-danger { color: #DC2626; }
 
-        /* ── ADAPTACIÓN AUTOMÁTICA PARA EL INVENTARIO ── */
-        nav { background-color: #1C1C1C !important; border-bottom: 1px solid #333333 !important; }
+        .tabla th { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border-inner); padding: 0.75rem 1.5rem; text-align: left; }
+        .tabla td { padding: 1rem 1.5rem; border-bottom: 1px solid var(--color-border-inner); font-size: 0.875rem; color: var(--color-text); }
+        .tabla tr:last-child td { border-bottom: none; }
 
-        /* Forzar que las tarjetas de materiales y stats hereden el estilo claro */
-        main .bg-gray-900 {
-            background-color: var(--color-card) !important;
-            border: 1px solid var(--color-border) !important;
-            border-radius: 0.6rem !important;
-            backdrop-filter: blur(4px);
-            color: var(--color-text) !important;
-            transition: background-color 0.15s, border-color 0.15s;
-        }
-        main .bg-gray-900:hover {
-            background-color: var(--color-card-hover) !important;
-        }
+        /* ── ESPECÍFICO INVENTARIO ── */
+        .material-card { background-color: var(--color-card); border: 1px solid var(--color-border); border-radius: 0.6rem; overflow: hidden; backdrop-filter: blur(4px); transition: background-color 0.15s, border-color 0.15s; }
+        .material-card:hover { background-color: var(--color-card-hover); border-color: rgba(102,100,96,0.8); }
+        .material-img { aspect-ratio: 1 / 1; background-color: rgba(102,100,96,0.1); overflow: hidden; position: relative; }
+        .material-img img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Reajustar textos oscuros/atenuados en el nuevo fondo claro */
-        main h2, main h3, main h4, main .text-white { color: var(--color-text) !important; }
-        main p.text-gray-400, main .text-gray-400 { color: var(--color-text-soft) !important; }
-        main p.text-gray-500, main p.text-gray-600, main .text-gray-500 { color: var(--color-text-muted) !important; }
+        .badge { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.2rem 0.6rem; border-radius: 999px; font-weight: 600; }
+        .badge-ok  { background-color: rgba(45,106,79,0.15);  border: 1px solid rgba(45,106,79,0.4);  color: #2D6A4F; }
+        .badge-low { background-color: rgba(212,184,122,0.2); border: 1px solid rgba(212,184,122,0.5); color: #8A6D2F; }
+        .badge-out { background-color: rgba(220,38,38,0.1);   border: 1px solid rgba(220,38,38,0.3);  color: #DC2626; }
+        .badge-solid-ok  { background-color: rgba(224,223,215,0.9); border: 1px solid rgba(45,106,79,0.5);  color: #2D6A4F; }
+        .badge-solid-low { background-color: rgba(224,223,215,0.9); border: 1px solid rgba(212,184,122,0.7); color: #8A6D2F; }
+        .badge-solid-out { background-color: rgba(224,223,215,0.9); border: 1px solid rgba(220,38,38,0.5);  color: #DC2626; }
 
-        /* Contenedor de la foto del material */
-        main .aspect-square.bg-gray-800 {
-            background-color: rgba(102, 100, 96, 0.1) !important;
-        }
-
-        /* Tabla de últimos movimientos adaptada al estilo de Transacciones */
-        main table { width: 100%; border-collapse: collapse; }
-        main table tr { border-bottom: 1px solid var(--color-border-inner) !important; background: transparent !important; }
-        main table tr:last-child { border-bottom: none !important; }
-        main table th {
-            font-size: 0.65rem !important; text-transform: uppercase; letter-spacing: 0.1em;
-            color: var(--color-text-muted) !important; padding: 0.75rem 1.5rem !important; text-align: left;
-        }
-        main table td { padding: 1rem 1.5rem !important; font-size: 0.875rem; color: var(--color-text-soft) !important; }
-        main table tbody tr:hover { background-color: rgba(102,100,96,0.08) !important; }
-        main table td.text-white, main table td .text-white { color: var(--color-text) !important; font-weight: 500; }
-        main table td.text-gray-400 { color: var(--color-text-muted) !important; }
-
-        /* Mantener legibles los Modales en fondo oscuro para conservar enfoque */
-        #modal-material .bg-gray-900,
-        #modal-solicitudes .bg-gray-900,
-        #modal-admin-inv .bg-gray-900,
-        #modal-nuevo-material .bg-gray-900 {
-            background-color: #1C1C1C !important;
-            border: 1px solid #333333 !important;
-            color: #E5E7EB !important;
-        }
-        #modal-material h3, #modal-solicitudes h3, #modal-admin-inv h3 { color: #FFFFFF !important; }
+        .modal-overlay { position: fixed; inset: 0; background-color: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 1rem; }
     </style>
 </head>
-<body class="bg-gray-950 text-gray-100 min-h-screen">
+<body class="min-h-screen" style="background-color: #F5DDC4; background-image: url('{{ asset('imagenes/PrometePuñal.png') }}'); background-size: 30%; background-repeat: no-repeat; background-position: center; background-attachment: fixed;">
 
     {{-- ── NAVBAR ── --}}
-    <nav class="bg-gray-900 border-b border-gray-800 px-8 py-4 flex justify-between items-center sticky top-0 z-50">
+    <nav style="background-color: #1C1C1C; border-bottom: 1px solid #333333;" class="px-8 py-4 flex justify-between items-center sticky top-0 z-50 shadow-md">
         <div class="flex items-center gap-6">
-            <a href="{{ route('dashboard') }}" class="font-syne text-xl font-bold text-white hover:opacity-80 transition">
-                Promet<span class="text-yellow-500">e</span>
+            <a href="{{ route('dashboard') }}" class="font-syne text-xl font-bold hover:opacity-80 transition" style="color: #F0D69C;">
+                Promet<span style="color: #D4B87A;">e</span>
             </a>
             <div class="flex items-center gap-5 ml-4">
-                <a href="{{ route('economato') }}" class="text-gray-400 hover:text-yellow-500 transition text-sm uppercase tracking-widest">Economato</a>
-                <a href="{{ route('transacciones') }}" class="text-gray-400 hover:text-yellow-500 transition text-sm uppercase tracking-widest">Transacciones</a>
-                <a href="{{ route('inventario') }}" class="text-yellow-500 text-sm uppercase tracking-widest">Inventario</a>
+                <a href="{{ route('economato') }}"     class="text-sm uppercase tracking-widest transition" style="color: #D4B87A;" onmouseover="this.style.color='#F0D69C'" onmouseout="this.style.color='#D4B87A'">Economato</a>
+                <a href="{{ route('transacciones') }}" class="text-sm uppercase tracking-widest transition" style="color: #D4B87A;" onmouseover="this.style.color='#F0D69C'" onmouseout="this.style.color='#D4B87A'">Transacciones</a>
+                <a href="{{ route('inventario') }}"    class="text-sm uppercase tracking-widest transition" style="color: #F0D69C;">Inventario</a>
+                <a href="{{ route('calendario') }}"    class="text-sm uppercase tracking-widest transition" style="color: #D4B87A;" onmouseover="this.style.color='#F0D69C'" onmouseout="this.style.color='#D4B87A'">Calendario</a>
             </div>
         </div>
         <div class="flex items-center gap-4">
-            <div class="flex items-center gap-1.5 border border-gray-800 px-3 py-1.5">
-                <svg class="w-3.5 h-3.5 {{ $user->saldo < 0 ? 'text-red-400' : 'text-yellow-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {{-- Saldo --}}
+            <div class="saldo-pill {{ $user->saldo < 0 ? 'saldo-danger' : 'saldo-ok' }}">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
                 </svg>
-                <span class="text-xs font-medium font-syne {{ $user->saldo < 0 ? 'text-red-400' : 'text-yellow-500' }}">
-                    {{ number_format($user->saldo, 2) }}€
-                </span>
+                {{ number_format($user->saldo, 2) }}€
             </div>
+            {{-- Carrito --}}
+            <a href="{{ route('carrito') }}" class="relative transition" style="color: #F0D69C;">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                @if(count(session('carrito', [])) > 0)
+                <span class="absolute -top-2 -right-2 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center" style="background-color: #D4B87A; color: #1C1C1C;">
+                    {{ count(session('carrito', [])) }}
+                </span>
+                @endif
+            </a>
+            {{-- Avatar dropdown --}}
             <div class="relative" id="user-menu">
-                <button onclick="toggleDropdown()" class="flex items-center gap-3 focus:outline-none group">
-                    <div class="w-9 h-9 rounded-full overflow-hidden border-2 border-gray-700 group-hover:border-yellow-500 transition">
+                <button onclick="toggleDropdown()" class="flex items-center gap-3 focus:outline-none">
+                    <div class="w-9 h-9 rounded-full overflow-hidden border-2" style="border-color: #D4B87A;">
                         @if($user->avatar)
                             <img src="{{ asset('storage/' . $user->avatar) }}" alt="{{ $user->nombre }}" class="w-full h-full object-cover">
                         @else
-                            <div class="w-full h-full bg-yellow-500/20 flex items-center justify-center">
-                                <span class="text-yellow-500 text-xs font-bold font-syne">{{ strtoupper(substr($user->nombre, 0, 2)) }}</span>
+                            <div class="w-full h-full flex items-center justify-center" style="background-color: rgba(212,184,122,0.2);">
+                                <span class="font-syne text-xs font-bold" style="color: #D4B87A;">{{ strtoupper(substr($user->nombre, 0, 2)) }}</span>
                             </div>
                         @endif
                     </div>
-                    <span class="text-gray-400 text-sm hidden md:block">{{ $user->nombre }}</span>
-                    <svg id="chevron" class="w-4 h-4 text-gray-500 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span class="text-sm hidden md:block" style="color: #D4B87A;">{{ $user->nombre }}</span>
+                    <svg id="chevron" class="w-4 h-4 transition-transform duration-200" style="color: #D4B87A;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                     </svg>
                 </button>
-                <div id="dropdown" class="hidden absolute right-0 mt-3 w-52 bg-gray-900 border border-gray-700 shadow-xl z-50">
-                    <div class="px-4 py-3 border-b border-gray-800">
-                        <p class="text-white text-sm font-medium">{{ $user->nombre }}</p>
-                        <p class="text-gray-500 text-xs mt-0.5">{{ ucfirst($user->rol) }}</p>
+                <div id="dropdown" class="dropdown hidden absolute right-0 mt-3 w-52 shadow-xl z-50">
+                    <div class="px-4 py-3 dropdown-divider">
+                        <p class="text-sm font-medium" style="color: #FFFFFF;">{{ $user->nombre }}</p>
+                        <p class="text-xs mt-0.5" style="color: rgba(255,255,255,0.45);">{{ ucfirst($user->rol) }}</p>
                     </div>
                     <div class="py-1">
-                        <a href="{{ route('mi-cuenta') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-800 hover:text-yellow-500 transition">
+                        <a href="{{ route('mi-cuenta') }}" class="dropdown-item">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                             Mi cuenta
                         </a>
                     </div>
-                    <div class="border-t border-gray-800 py-1">
+                    <div class="py-1 dropdown-divider">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-gray-800 hover:text-red-300 transition">
+                            <button type="submit" class="dropdown-item danger w-full">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                                 Cerrar sesión
                             </button>
@@ -173,33 +150,32 @@
         </div>
     </nav>
 
-    <main class="px-8 py-8 max-w-7xl mx-auto">
+    <main class="px-8 py-8 max-w-6xl mx-auto">
 
+        {{-- ── MENSAJES ── --}}
         @if(session('success'))
-        <div class="mb-6 bg-green-900/30 border border-green-700 text-green-400 px-5 py-3 text-sm">{{ session('success') }}</div>
+        <div class="mb-6 px-5 py-3 text-sm rounded-md" style="background-color: rgba(45,106,79,0.15); border: 1px solid rgba(45,106,79,0.4); color: #2D6A4F;">{{ session('success') }}</div>
         @endif
         @if($errors->any())
-        <div class="mb-6 bg-red-900/30 border border-red-700 text-red-400 px-5 py-3 text-sm">{{ $errors->first() }}</div>
+        <div class="mb-6 px-5 py-3 text-sm rounded-md" style="background-color: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.3); color: #DC2626;">{{ $errors->first() }}</div>
         @endif
 
         {{-- ── CABECERA ── --}}
-        <div class="flex justify-between items-center mb-8">
+        <div class="mb-8 flex justify-between items-center">
             <div>
-                <h2 class="font-syne text-3xl font-bold text-white">Inventario</h2>
-                <p class="text-gray-400 text-sm mt-1">Materiales y equipamiento del servicio</p>
+                <h2 class="page-title">Inventario</h2>
+                <p class="page-subtitle">Materiales y equipamiento del servicio</p>
             </div>
-            @if(Auth::user()->rol === 'administrador')
+            @if($user->rol === 'administrador')
             <div class="flex gap-3 items-center">
                 @if($solicitudesPendientes->count() > 0)
-                <button onclick="document.getElementById('modal-solicitudes').classList.remove('hidden')"
-                    class="bg-yellow-500 text-gray-950 px-5 py-2.5 text-sm font-medium uppercase tracking-wider hover:bg-yellow-400 transition relative">
-                    📋 Solicitudes
-                    <span class="ml-2 bg-gray-950 text-yellow-500 text-xs font-bold px-1.5 py-0.5 rounded-full">{{ $solicitudesPendientes->count() }}</span>
+                <button onclick="document.getElementById('modal-solicitudes').classList.remove('hidden')" class="btn-outline relative">
+                    Solicitudes
+                    <span class="ml-2 text-xs font-bold px-1.5 py-0.5 rounded-full" style="background-color: #1C1C1C; color: #F0D69C;">{{ $solicitudesPendientes->count() }}</span>
                 </button>
                 @endif
-                <button onclick="document.getElementById('modal-admin-inv').classList.remove('hidden')"
-                    class="bg-gray-800 border border-gray-700 text-gray-300 px-5 py-2.5 text-sm font-medium uppercase tracking-wider hover:border-yellow-500 hover:text-yellow-500 transition">
-                    ⚙ Administrar
+                <button onclick="document.getElementById('modal-nuevo-material').classList.remove('hidden')" class="btn-primary">
+                    + Añadir material
                 </button>
             </div>
             @endif
@@ -207,122 +183,125 @@
 
         {{-- ── STATS ── --}}
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div class="bg-gray-900 border border-gray-800 p-5">
-                <p class="text-gray-500 text-xs uppercase tracking-widest mb-2">Total</p>
-                <p class="font-syne text-3xl font-bold text-white">{{ $totalMateriales }}</p>
+            <div class="card p-5">
+                <p class="text-xs uppercase tracking-widest mb-2" style="color: var(--color-text-muted);">Total</p>
+                <p class="font-syne text-3xl font-bold" style="color: var(--color-text);">{{ $totalMateriales }}</p>
             </div>
-            <div class="bg-gray-900 border border-gray-800 p-5">
-                <p class="text-gray-500 text-xs uppercase tracking-widest mb-2">Disponibles</p>
-                <p class="font-syne text-3xl font-bold text-green-400">{{ $disponibles }}</p>
+            <div class="card p-5">
+                <p class="text-xs uppercase tracking-widest mb-2" style="color: var(--color-text-muted);">Disponibles</p>
+                <p class="font-syne text-3xl font-bold" style="color: #2D6A4F;">{{ $disponibles }}</p>
             </div>
-            <div class="bg-gray-900 border border-gray-800 p-5">
-                <p class="text-gray-500 text-xs uppercase tracking-widest mb-2">Prestados</p>
-                <p class="font-syne text-3xl font-bold text-yellow-500">{{ $prestados }}</p>
+            <div class="card p-5">
+                <p class="text-xs uppercase tracking-widest mb-2" style="color: var(--color-text-muted);">Prestados</p>
+                <p class="font-syne text-3xl font-bold" style="color: #8A6D2F;">{{ $prestados }}</p>
             </div>
-            <div class="bg-gray-900 border border-gray-800 p-5">
-                <p class="text-gray-500 text-xs uppercase tracking-widest mb-2">Mantenimiento</p>
-                <p class="font-syne text-3xl font-bold text-red-400">{{ $mantenimiento }}</p>
+            <div class="card p-5">
+                <p class="text-xs uppercase tracking-widest mb-2" style="color: var(--color-text-muted);">Mantenimiento</p>
+                <p class="font-syne text-3xl font-bold" style="color: #DC2626;">{{ $mantenimiento }}</p>
             </div>
         </div>
 
+        {{-- ── BUSCADOR ── --}}
+        <div class="mb-6 flex justify-between items-center">
+            <h3 class="font-syne text-lg font-bold" style="color: var(--color-text);">Materiales</h3>
+            <input type="text" id="buscador" placeholder="Buscar material..." onkeyup="filtrarGrid()" class="form-input" style="width: 16rem;">
+        </div>
+
         {{-- ── GRID DE MATERIALES ── --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-8">
+        <div id="grid-materiales" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-10">
             @forelse($materiales as $material)
-            <div onclick="abrirModalMaterial(
-                    {{ $material->id }},
-                    '{{ addslashes($material->nombre) }}',
-                    '{{ addslashes($material->descripcion ?? '') }}',
-                    '{{ addslashes($material->tipo) }}',
-                    '{{ $material->estado }}',
-                    '{{ $material->imagen ? asset('storage/' . $material->imagen) : '' }}',
-                    '{{ addslashes($material->usuario->nombre ?? '') }}',
-                    '{{ addslashes($material->usuarioPrestado->nombre ?? '') }}'
-                )"
-                class="bg-gray-900 border border-gray-800 hover:border-yellow-500/40 transition cursor-pointer group">
-                <div class="aspect-square bg-gray-800 overflow-hidden relative">
-                    @if($material->imagen)
-                        <img src="{{ asset('storage/' . $material->imagen) }}" alt="{{ $material->nombre }}"
-                             class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                    @else
-                        <div class="w-full h-full flex items-center justify-center text-gray-700">
-                            <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                            </svg>
+            <div class="material-card">
+                <div class="cursor-pointer" onclick="abrirModalMaterial(
+                        {{ $material->id }},
+                        '{{ addslashes($material->nombre) }}',
+                        '{{ addslashes($material->descripcion ?? '') }}',
+                        '{{ addslashes($material->tipo) }}',
+                        '{{ $material->estado }}',
+                        '{{ $material->imagen ? asset('storage/' . $material->imagen) : '' }}',
+                        '{{ addslashes($material->usuario->nombre ?? '') }}',
+                        '{{ addslashes($material->usuarioPrestado->nombre ?? '') }}',
+                        {{ $material->id_prestado === $user->id ? 'true' : 'false' }}
+                    )">
+                    <div class="material-img">
+                        @if($material->imagen)
+                            <img src="{{ asset('storage/' . $material->imagen) }}" alt="{{ $material->nombre }}">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center" style="color: rgba(102,100,96,0.35);">
+                                <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                </svg>
+                            </div>
+                        @endif
+                        <div class="absolute top-2 left-2">
+                            @if($material->estado === 'disponible')
+                                <span class="badge badge-solid-ok">Disponible</span>
+                            @elseif($material->estado === 'prestado')
+                                <span class="badge badge-solid-low">Prestado</span>
+                            @else
+                                <span class="badge badge-solid-out">Mantenimiento</span>
+                            @endif
                         </div>
-                    @endif
-                    @if($material->estado === 'prestado')
-                    <div class="absolute top-2 left-2 bg-yellow-900/80 text-yellow-300 text-xs px-2 py-0.5 uppercase tracking-wider">Prestado</div>
-                    @elseif($material->estado === 'mantenimiento')
-                    <div class="absolute top-2 left-2 bg-red-900/80 text-red-300 text-xs px-2 py-0.5 uppercase tracking-wider">Mantenimiento</div>
-                    @endif
+                    </div>
+                    <div class="p-4 pb-2">
+                        <p class="font-syne font-bold text-sm mb-1" style="color: var(--color-text);">{{ $material->nombre }}</p>
+                        <p class="text-xs mb-1" style="color: var(--color-text-soft);">{{ $material->tipo }}</p>
+                        <p class="text-xs" style="color: var(--color-text-muted);">Propietario: {{ $material->usuario->nombre ?? '—' }}</p>
+                        @if($material->estado === 'prestado' && $material->usuarioPrestado)
+                        <p class="text-xs mt-1" style="color: #8A6D2F;">Con: {{ $material->usuarioPrestado->nombre }}</p>
+                        @endif
+                    </div>
                 </div>
-                <div class="p-4">
-                    <p class="font-syne font-bold text-white text-sm mb-1">{{ $material->nombre }}</p>
-                    <p class="text-gray-500 text-xs mb-1">{{ $material->tipo }}</p>
-                    <p class="text-gray-600 text-xs mb-2">Propietario: {{ $material->usuario->nombre ?? '—' }}</p>
-                    @if($material->estado === 'disponible')
-                        <span class="bg-green-900/30 text-green-400 text-xs px-2 py-0.5 uppercase tracking-wider">Disponible</span>
-                    @elseif($material->estado === 'prestado')
-                        <span class="bg-yellow-900/30 text-yellow-400 text-xs px-2 py-0.5 uppercase tracking-wider">{{ $material->usuarioPrestado->nombre ?? 'Prestado' }}</span>
-                    @else
-                        <span class="bg-red-900/30 text-red-400 text-xs px-2 py-0.5 uppercase tracking-wider">Mantenimiento</span>
-                    @endif
+                @if($user->rol === 'administrador')
+                <div class="px-4 pb-3 pt-2 mx-4 mb-1" style="border-top: 1px solid var(--color-border-inner); margin-left: 1rem; margin-right: 1rem; padding-left: 0; padding-right: 0;">
+                    <form method="POST" action="{{ route('materiales.destroy', $material->id) }}" onsubmit="return confirm('¿Eliminar {{ addslashes($material->nombre) }}?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-xs uppercase tracking-wider" style="color: #DC2626;">Eliminar</button>
+                    </form>
                 </div>
+                @endif
             </div>
             @empty
-            <div class="col-span-4 py-20 text-center text-gray-600">
-                <p class="text-4xl mb-3">📦</p>
-                <p>No hay materiales registrados aún.</p>
+            <div class="card p-16 text-center col-span-full">
+                <p style="color: var(--color-text-muted);">No hay materiales registrados aún.</p>
             </div>
             @endforelse
         </div>
 
-        {{-- ── ÚLTIMOS MOVIMIENTOS ── --}}
-        <div class="bg-gray-900 border border-gray-800">
-            <div class="px-6 py-4 border-b border-gray-800">
-                <h3 class="font-syne text-lg font-bold">
-                    {{ Auth::user()->rol === 'administrador' ? 'Últimos Movimientos (todos)' : 'Mis Últimos Préstamos' }}
-                </h3>
-                <p class="text-gray-500 text-xs mt-0.5">Historial de préstamos y devoluciones</p>
+        {{-- ── ÚLTIMOS PRÉSTAMOS ── --}}
+        <div class="card mb-8">
+            <div class="card-header">
+                <p class="card-title">Últimos préstamos</p>
+                <p class="card-subtitle">{{ $user->rol === 'administrador' ? 'Movimientos recientes de todos los usuarios' : 'Tus movimientos recientes' }}</p>
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full text-sm">
+                <table class="w-full tabla">
                     <thead>
-                        <tr class="border-b border-gray-800 text-gray-500 text-xs uppercase tracking-widest">
-                            <th class="text-left px-6 py-3">Fecha</th>
-                            @if(Auth::user()->rol === 'administrador')
-                            <th class="text-left px-6 py-3">Usuario</th>
-                            @endif
-                            <th class="text-left px-6 py-3">Material</th>
-                            <th class="text-left px-6 py-3">Estado</th>
-                            <th class="text-left px-6 py-3">Devolución</th>
+                        <tr>
+                            <th>Fecha</th>
+                            @if($user->rol === 'administrador')<th>Usuario</th>@endif
+                            <th>Material</th>
+                            <th>Estado</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($ultimosPrestamos as $p)
-                        <tr class="border-b border-gray-800/50 hover:bg-gray-800/30 transition">
-                            <td class="px-6 py-4 text-gray-400">{{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y H:i') }}</td>
-                            @if(Auth::user()->rol === 'administrador')
-                            <td class="px-6 py-4 text-white">{{ $p->usuario->nombre }}</td>
-                            @endif
-                            <td class="px-6 py-4 font-medium text-white">{{ $p->nombre_material }}</td>
-                            <td class="px-6 py-4">
-                                @if($p->estado === 'pendiente')
-                                    <span class="bg-gray-800 text-gray-400 text-xs px-3 py-1 uppercase tracking-wider">Pendiente</span>
-                                @elseif($p->estado === 'aprobado')
-                                    <span class="bg-yellow-900/30 text-yellow-400 text-xs px-3 py-1 uppercase tracking-wider">Aprobado</span>
+                        <tr>
+                            <td>{{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y H:i') }}</td>
+                            @if($user->rol === 'administrador')<td>{{ $p->usuario->nombre ?? '—' }}</td>@endif
+                            <td>{{ $p->nombre_material }}</td>
+                            <td>
+                                @if($p->estado === 'aprobado')
+                                    <span class="badge badge-low">Aprobado</span>
+                                @elseif($p->estado === 'pendiente')
+                                    <span class="badge badge-ok">Pendiente</span>
                                 @else
-                                    <span class="bg-green-900/30 text-green-400 text-xs px-3 py-1 uppercase tracking-wider">Devuelto</span>
+                                    <span class="badge" style="background-color: rgba(102,100,96,0.1); border: 1px solid var(--color-border-inner); color: var(--color-text-muted);">Devuelto</span>
                                 @endif
-                            </td>
-                            <td class="px-6 py-4 text-gray-400">
-                                {{ $p->fecha_devolucion ? \Carbon\Carbon::parse($p->fecha_devolucion)->format('d/m/Y H:i') : '—' }}
                             </td>
                         </tr>
                         @empty
-                        <tr>
-                            <td colspan="5" class="px-6 py-10 text-center text-gray-600">No hay movimientos registrados aún.</td>
-                        </tr>
+                        <tr><td colspan="{{ $user->rol === 'administrador' ? 4 : 3 }}" class="text-center py-8" style="color: var(--color-text-muted);">No hay préstamos registrados.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -332,264 +311,135 @@
     </main>
 
     {{-- ── MODAL DETALLE MATERIAL ── --}}
-    <div id="modal-material" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-        <div class="bg-gray-900 border border-gray-700 w-full max-w-2xl">
-            <div class="aspect-video bg-gray-800 overflow-hidden relative">
-                <img id="mat-img" src="" alt="" class="w-full h-full object-cover">
-                <div id="mat-img-placeholder" class="hidden absolute inset-0 flex items-center justify-center text-gray-700">
-                    <svg class="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div id="modal-material" class="hidden modal-overlay">
+        <div class="card w-full max-w-md overflow-hidden">
+            <div class="material-img" style="max-height: 18rem;">
+                <img id="mat-img" src="" alt="" class="hidden" style="max-height: 18rem;">
+                <div id="mat-img-placeholder" class="w-full h-48 flex items-center justify-center" style="color: rgba(102,100,96,0.35);">
+                    <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                     </svg>
                 </div>
-                <button onclick="cerrarModalMaterial()" class="absolute top-3 right-3 bg-black/50 text-white hover:bg-black/80 transition w-8 h-8 flex items-center justify-center">✕</button>
-                <div id="mat-estado-badge" class="absolute top-3 left-3 text-xs px-3 py-1 uppercase tracking-wider"></div>
+                <span id="mat-estado-badge" class="badge badge-solid-ok" style="position: absolute; top: 0.75rem; left: 0.75rem;"></span>
             </div>
             <div class="p-6">
-                <div class="flex justify-between items-start mb-2">
-                    <div>
-                        <h3 id="mat-nombre" class="font-syne text-2xl font-bold text-white"></h3>
-                        <p id="mat-tipo" class="text-gray-500 text-sm mt-0.5"></p>
-                    </div>
-                </div>
-                <p id="mat-descripcion" class="text-gray-400 text-sm mb-2"></p>
-                <p id="mat-propietario" class="text-gray-600 text-xs mb-1"></p>
-                <p id="mat-asignado" class="text-gray-500 text-xs mb-6"></p>
+                <h3 id="mat-nombre" class="font-syne text-xl font-bold mb-1" style="color: var(--color-text);"></h3>
+                <p id="mat-tipo" class="text-xs uppercase tracking-wider mb-2" style="color: var(--color-text-soft);"></p>
+                <p id="mat-descripcion" class="text-sm mb-2" style="color: var(--color-text-muted);"></p>
+                <p id="mat-propietario" class="text-xs mb-2" style="color: var(--color-text-muted);"></p>
+                <p id="mat-asignado" class="text-sm mb-4" style="color: var(--color-text-soft);"></p>
 
-                <form method="POST" action="{{ route('inventario.prestar') }}" id="form-prestar" class="hidden">
+                <form method="POST" action="{{ route('inventario.prestar') }}" id="form-prestar" class="hidden mb-3">
                     @csrf
                     <input type="hidden" name="id_mat" id="mat-id-prestar">
-                    <button type="submit" class="w-full bg-yellow-500 text-gray-950 py-2.5 text-sm font-medium uppercase tracking-wider hover:bg-yellow-400 transition">
-                        Solicitar Préstamo
-                    </button>
+                    <button type="submit" class="btn-primary w-full">Solicitar préstamo</button>
                 </form>
 
-                <form method="POST" action="{{ route('inventario.devolver') }}" id="form-devolver" class="hidden">
+                <form method="POST" action="{{ route('inventario.devolver') }}" id="form-devolver" class="hidden mb-3">
                     @csrf
                     <input type="hidden" name="id_mat" id="mat-id-devolver">
-                    <button type="submit" class="w-full bg-green-600 text-white py-2.5 text-sm font-medium uppercase tracking-wider hover:bg-green-500 transition">
-                        Devolver Material
-                    </button>
+                    <button type="submit" class="btn-ok">Devolver material</button>
                 </form>
 
-                <div id="mat-pendiente-msg" class="hidden text-center text-gray-500 text-sm py-2">
+                <div id="mat-pendiente-msg" class="hidden text-center text-sm py-2 mb-3" style="color: var(--color-text-muted);">
                     Ya tienes una solicitud pendiente para este material.
                 </div>
+
+                @if($user->rol === 'administrador')
+                <form method="POST" action="{{ route('materiales.estado') }}" class="mb-3 pt-3" style="border-top: 1px solid var(--color-border-inner);">
+                    @csrf
+                    <input type="hidden" name="id_mat" id="mat-id-estado">
+                    <label class="form-label">Cambiar estado (admin)</label>
+                    <div class="flex gap-2">
+                        <select name="estado" id="mat-estado-select" class="form-input" style="flex: 1;">
+                            <option value="disponible">Disponible</option>
+                            <option value="prestado">Prestado</option>
+                            <option value="mantenimiento">Mantenimiento</option>
+                        </select>
+                        <button type="submit" class="btn-outline" style="padding: 0.6rem 1rem;">Aplicar</button>
+                    </div>
+                </form>
+                @endif
+
+                <button onclick="cerrarModalMaterial()" class="btn-outline w-full">Cerrar</button>
             </div>
         </div>
     </div>
 
-    {{-- ── MODAL SOLICITUDES PENDIENTES (solo admin) ── --}}
-    @if(Auth::user()->rol === 'administrador')
-    <div id="modal-solicitudes" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-        <div class="bg-gray-900 border border-gray-700 w-full max-w-2xl max-h-screen overflow-y-auto">
-            <div class="px-6 py-4 border-b border-gray-800 flex justify-between items-center sticky top-0 bg-gray-900">
-                <h3 class="font-syne text-xl font-bold">📋 Solicitudes Pendientes</h3>
-                <button onclick="document.getElementById('modal-solicitudes').classList.add('hidden')" class="text-gray-500 hover:text-white transition">✕</button>
+    @if($user->rol === 'administrador')
+
+    {{-- ── MODAL NUEVO MATERIAL ── --}}
+    <div id="modal-nuevo-material" class="hidden modal-overlay">
+        <div class="card p-8 w-full max-w-md">
+            <h3 class="font-syne text-xl font-bold mb-6" style="color: var(--color-text);">Nuevo material</h3>
+            <form method="POST" action="{{ route('materiales.store') }}" enctype="multipart/form-data">
+                @csrf
+                <div class="mb-4">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" name="nombre" required class="form-input">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Descripción (opcional)</label>
+                    <input type="text" name="descripcion" maxlength="500" class="form-input">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Tipo</label>
+                    <input type="text" name="tipo" required class="form-input" placeholder="Instrumento, cable, micrófono...">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Propietario</label>
+                    <select name="id_us" required class="form-input">
+                        @foreach($usuarios as $u)
+                        <option value="{{ $u->id }}">{{ $u->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mb-6">
+                    <label class="form-label">Imagen (opcional · máx. 5 MB)</label>
+                    <input type="file" name="imagen" accept="image/*" class="form-input" style="padding: 0.45rem 1rem;">
+                </div>
+                <div class="flex gap-3 justify-end">
+                    <button type="button" onclick="document.getElementById('modal-nuevo-material').classList.add('hidden')" class="btn-outline">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{-- ── MODAL SOLICITUDES PENDIENTES ── --}}
+    <div id="modal-solicitudes" class="hidden modal-overlay">
+        <div class="card w-full max-w-2xl" style="max-height: 90vh; overflow-y: auto;">
+            <div class="card-header flex justify-between items-center">
+                <p class="card-title">Solicitudes pendientes</p>
+                <button onclick="document.getElementById('modal-solicitudes').classList.add('hidden')" class="transition" style="color: var(--color-text-muted);">✕</button>
             </div>
             <div class="p-6">
                 @forelse($solicitudesPendientes as $s)
-                <div class="bg-gray-800 border border-gray-700 px-5 py-4 mb-3">
+                <div class="mb-3 px-5 py-4 rounded-md" style="background-color: rgba(102,100,96,0.06); border: 1px solid var(--color-border-inner);">
                     <div class="flex justify-between items-start mb-3">
                         <div>
-                            <p class="text-white font-medium">{{ $s->usuario->nombre }}</p>
-                            <p class="text-yellow-500 text-sm mt-0.5">{{ $s->nombre_material }}</p>
-                            <p class="text-gray-500 text-xs mt-0.5">{{ \Carbon\Carbon::parse($s->fecha)->format('d/m/Y H:i') }}</p>
+                            <p class="font-medium" style="color: var(--color-text);">{{ $s->usuario->nombre }}</p>
+                            <p class="text-sm mt-0.5" style="color: #8A6D2F;">{{ $s->nombre_material }}</p>
+                            <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">{{ \Carbon\Carbon::parse($s->fecha)->format('d/m/Y H:i') }}</p>
                         </div>
-                        <span class="bg-gray-700 text-gray-400 text-xs px-2 py-0.5 uppercase">Pendiente</span>
+                        <span class="badge badge-ok">Pendiente</span>
                     </div>
                     <div class="flex gap-3">
                         <form method="POST" action="{{ route('inventario.aprobar') }}" class="flex-1">
                             @csrf
                             <input type="hidden" name="id_prestamo" value="{{ $s->id }}">
-                            <button type="submit" class="w-full bg-green-600 text-white py-2 text-xs font-medium uppercase tracking-wider hover:bg-green-500 transition">
-                                ✓ Aprobar
-                            </button>
+                            <button type="submit" class="btn-ok">✓ Aprobar</button>
                         </form>
                         <form method="POST" action="{{ route('inventario.rechazar') }}" class="flex-1">
                             @csrf
                             <input type="hidden" name="id_prestamo" value="{{ $s->id }}">
-                            <button type="submit" class="w-full bg-red-600 text-white py-2 text-xs font-medium uppercase tracking-wider hover:bg-red-500 transition">
-                                ✕ Rechazar
-                            </button>
+                            <button type="submit" class="btn-danger">✕ Rechazar</button>
                         </form>
                     </div>
                 </div>
                 @empty
-                <p class="text-gray-600 text-center py-8">No hay solicitudes pendientes.</p>
+                <p class="text-center py-8" style="color: var(--color-text-muted);">No hay solicitudes pendientes.</p>
                 @endforelse
-            </div>
-        </div>
-    </div>
-
-    {{-- ── MODAL ADMINISTRAR INVENTARIO ── --}}
-    <div id="modal-admin-inv" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-        <div class="bg-gray-900 border border-gray-700 w-full max-w-3xl max-h-screen overflow-y-auto">
-            <div class="px-6 py-4 border-b border-gray-800 flex justify-between items-center sticky top-0 bg-gray-900 z-10">
-                <h3 class="font-syne text-xl font-bold">⚙ Administrar Inventario</h3>
-                <button onclick="document.getElementById('modal-admin-inv').classList.add('hidden')" class="text-gray-500 hover:text-white transition">✕</button>
-            </div>
-            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="flex flex-col gap-3">
-                    <h4 class="text-gray-500 text-xs uppercase tracking-widest mb-1">Acciones</h4>
-                    <button onclick="abrirSubModalInv('modal-nuevo-material')"
-                        class="w-full bg-gray-800 border border-gray-700 text-left px-5 py-4 hover:border-yellow-500 hover:text-yellow-500 transition">
-                        <p class="font-medium">+ Añadir material</p>
-                        <p class="text-gray-500 text-xs mt-0.5">Registrar un nuevo material en el inventario</p>
-                    </button>
-                    <button onclick="abrirSubModalInv('modal-eliminar-material')"
-                        class="w-full bg-gray-800 border border-gray-700 text-left px-5 py-4 hover:border-red-500 hover:text-red-400 transition">
-                        <p class="font-medium">🗑 Eliminar material</p>
-                        <p class="text-gray-500 text-xs mt-0.5">Eliminar un material del inventario</p>
-                    </button>
-                    <button onclick="abrirSubModalInv('modal-cambiar-estado')"
-                        class="w-full bg-gray-800 border border-gray-700 text-left px-5 py-4 hover:border-yellow-500 hover:text-yellow-500 transition">
-                        <p class="font-medium">🔄 Cambiar estado</p>
-                        <p class="text-gray-500 text-xs mt-0.5">Disponible, prestado o mantenimiento</p>
-                    </button>
-                    <a href="{{ route('inventario.movimientos') }}"
-                        class="w-full bg-gray-800 border border-gray-700 text-left px-5 py-4 hover:border-yellow-500 hover:text-yellow-500 transition block">
-                        <p class="font-medium">📊 Ver movimientos</p>
-                        <p class="text-gray-500 text-xs mt-0.5">Historial completo de préstamos y devoluciones</p>
-                    </a>
-                </div>
-                <div>
-                    <h4 class="text-gray-500 text-xs uppercase tracking-widest mb-3">Últimos movimientos</h4>
-                    <div class="flex flex-col gap-2 max-h-80 overflow-y-auto">
-                        @forelse($ultimosPrestamos as $p)
-                        <div class="bg-gray-800 border border-gray-700/50 px-4 py-3">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <p class="text-white text-sm font-medium">{{ $p->usuario->nombre }}</p>
-                                    <p class="text-gray-500 text-xs mt-0.5">{{ $p->nombre_material }}</p>
-                                </div>
-                                <div class="text-right">
-                                    @if($p->estado === 'pendiente')
-                                        <span class="bg-gray-700 text-gray-400 text-xs px-2 py-0.5 uppercase">Pendiente</span>
-                                    @elseif($p->estado === 'aprobado')
-                                        <span class="bg-yellow-900/30 text-yellow-400 text-xs px-2 py-0.5 uppercase">Aprobado</span>
-                                    @else
-                                        <span class="bg-green-900/30 text-green-400 text-xs px-2 py-0.5 uppercase">Devuelto</span>
-                                    @endif
-                                    <p class="text-gray-600 text-xs mt-1">{{ \Carbon\Carbon::parse($p->fecha)->format('d/m H:i') }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        @empty
-                        <p class="text-gray-600 text-sm text-center py-8">No hay movimientos aún.</p>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Submodal: Nuevo material --}}
-    <div id="modal-nuevo-material" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[60] p-4">
-        <div class="bg-gray-900 border border-gray-700 w-full max-w-md">
-            <div class="px-6 py-4 border-b border-gray-800 flex justify-between items-center">
-                <h3 class="font-syne text-xl font-bold">Nuevo Material</h3>
-                <button onclick="document.getElementById('modal-nuevo-material').classList.add('hidden')" class="text-gray-500 hover:text-white transition">✕</button>
-            </div>
-            <div class="p-6">
-                <form method="POST" action="{{ route('materiales.store') }}" enctype="multipart/form-data">
-                    @csrf
-                    <div class="mb-4">
-                        <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Nombre</label>
-                        <input type="text" name="nombre" required class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2.5 focus:outline-none focus:border-yellow-500">
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Tipo / Categoría</label>
-                        <input type="text" name="tipo" required class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2.5 focus:outline-none focus:border-yellow-500">
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Descripción</label>
-                        <input type="text" name="descripcion" class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2.5 focus:outline-none focus:border-yellow-500">
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Propietario</label>
-                        <select name="id_us" required class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2.5 focus:outline-none focus:border-yellow-500">
-                            <option value="">— Selecciona un usuario —</option>
-                            @foreach($usuarios as $u)
-                            <option value="{{ $u->id }}">{{ $u->nombre }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-6">
-                        <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Imagen</label>
-                        <input type="file" name="imagen" accept="image/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-xs file:font-medium file:uppercase file:bg-yellow-500 file:text-gray-950 hover:file:bg-yellow-400 file:cursor-pointer">
-                    </div>
-                    <div class="flex gap-3 justify-end">
-                        <button type="button" onclick="document.getElementById('modal-nuevo-material').classList.add('hidden')" class="px-5 py-2.5 text-sm text-gray-400 border border-gray-700 hover:border-gray-500 transition uppercase tracking-wider">Cancelar</button>
-                        <button type="submit" class="px-5 py-2.5 text-sm bg-yellow-500 text-gray-950 font-medium hover:bg-yellow-400 transition uppercase tracking-wider">Guardar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    {{-- Submodal: Eliminar material --}}
-    <div id="modal-eliminar-material" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[60] p-4">
-        <div class="bg-gray-900 border border-gray-700 w-full max-w-md">
-            <div class="px-6 py-4 border-b border-gray-800 flex justify-between items-center">
-                <h3 class="font-syne text-xl font-bold text-red-400">Eliminar Material</h3>
-                <button onclick="document.getElementById('modal-eliminar-material').classList.add('hidden')" class="text-gray-500 hover:text-white transition">✕</button>
-            </div>
-            <div class="p-6">
-                <p class="text-gray-400 text-sm mb-4">Selecciona el material a eliminar. Esta acción no se puede deshacer.</p>
-                <form method="POST" id="form-eliminar-mat" action="" onsubmit="return confirm('¿Seguro que quieres eliminar este material?')">
-                    @csrf
-                    @method('DELETE')
-                    <div class="mb-6">
-                        <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Material</label>
-                        <select onchange="document.getElementById('form-eliminar-mat').action = '/materiales/' + this.value"
-                            class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2.5 focus:outline-none focus:border-red-500">
-                            <option value="">— Selecciona un material —</option>
-                            @foreach($materiales as $m)
-                            <option value="{{ $m->id }}">{{ $m->nombre }} ({{ $m->estado }})</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="flex gap-3 justify-end">
-                        <button type="button" onclick="document.getElementById('modal-eliminar-material').classList.add('hidden')" class="px-5 py-2.5 text-sm text-gray-400 border border-gray-700 hover:border-gray-500 transition uppercase tracking-wider">Cancelar</button>
-                        <button type="submit" class="px-5 py-2.5 text-sm bg-red-600 text-white font-medium hover:bg-red-500 transition uppercase tracking-wider">Eliminar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    {{-- Submodal: Cambiar estado --}}
-    <div id="modal-cambiar-estado" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[60] p-4">
-        <div class="bg-gray-900 border border-gray-700 w-full max-w-md">
-            <div class="px-6 py-4 border-b border-gray-800 flex justify-between items-center">
-                <h3 class="font-syne text-xl font-bold">Cambiar Estado</h3>
-                <button onclick="document.getElementById('modal-cambiar-estado').classList.add('hidden')" class="text-gray-500 hover:text-white transition">✕</button>
-            </div>
-            <div class="p-6">
-                <form method="POST" action="{{ route('materiales.estado') }}">
-                    @csrf
-                    <div class="mb-4">
-                        <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Material</label>
-                        <select name="id_mat" required class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2.5 focus:outline-none focus:border-yellow-500">
-                            <option value="">— Selecciona un material —</option>
-                            @foreach($materiales as $m)
-                            <option value="{{ $m->id }}">{{ $m->nombre }} ({{ $m->estado }})</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-6">
-                        <label class="block text-gray-400 text-xs uppercase tracking-wider mb-2">Nuevo estado</label>
-                        <select name="estado" required class="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2.5 focus:outline-none focus:border-yellow-500">
-                            <option value="disponible">Disponible</option>
-                            <option value="prestado">Prestado</option>
-                            <option value="mantenimiento">Mantenimiento</option>
-                        </select>
-                    </div>
-                    <div class="flex gap-3 justify-end">
-                        <button type="button" onclick="document.getElementById('modal-cambiar-estado').classList.add('hidden')" class="px-5 py-2.5 text-sm text-gray-400 border border-gray-700 hover:border-gray-500 transition uppercase tracking-wider">Cancelar</button>
-                        <button type="submit" class="px-5 py-2.5 text-sm bg-yellow-500 text-gray-950 font-medium hover:bg-yellow-400 transition uppercase tracking-wider">Guardar</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
@@ -597,9 +447,12 @@
     @endif
 
     <script>
+        // Materiales para los que el usuario actual ya tiene una solicitud pendiente
+        const misPendientes = @json($solicitudesPendientes->where('id_us', auth()->id())->pluck('id_mat')->values());
+
         function toggleDropdown() {
             const dropdown = document.getElementById('dropdown');
-            const chevron = document.getElementById('chevron');
+            const chevron  = document.getElementById('chevron');
             dropdown.classList.toggle('hidden');
             chevron.style.transform = dropdown.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
         }
@@ -611,12 +464,14 @@
             }
         });
 
-        function abrirSubModalInv(id) {
-            document.getElementById('modal-admin-inv').classList.add('hidden');
-            document.getElementById(id).classList.remove('hidden');
+        function filtrarGrid() {
+            const filtro = document.getElementById('buscador').value.toLowerCase();
+            document.querySelectorAll('#grid-materiales .material-card').forEach(card => {
+                card.style.display = card.textContent.toLowerCase().includes(filtro) ? '' : 'none';
+            });
         }
 
-        function abrirModalMaterial(id, nombre, descripcion, tipo, estado, imagen, propietario, prestadoA) {
+        function abrirModalMaterial(id, nombre, descripcion, tipo, estado, imagen, propietario, prestadoA, esMio) {
             document.getElementById('mat-nombre').textContent = nombre;
             document.getElementById('mat-tipo').textContent = tipo;
             document.getElementById('mat-descripcion').textContent = descripcion || '';
@@ -633,9 +488,9 @@
                 placeholder.classList.remove('hidden');
             }
 
-            const badge = document.getElementById('mat-estado-badge');
-            const asignadoEl = document.getElementById('mat-asignado');
-            const formPrestar = document.getElementById('form-prestar');
+            const badge        = document.getElementById('mat-estado-badge');
+            const asignadoEl   = document.getElementById('mat-asignado');
+            const formPrestar  = document.getElementById('form-prestar');
             const formDevolver = document.getElementById('form-devolver');
             const pendienteMsg = document.getElementById('mat-pendiente-msg');
 
@@ -645,21 +500,36 @@
 
             if (estado === 'disponible') {
                 badge.textContent = 'Disponible';
-                badge.className = 'absolute top-3 left-3 text-xs px-3 py-1 uppercase tracking-wider bg-green-900/80 text-green-300';
+                badge.className = 'badge badge-solid-ok';
                 asignadoEl.textContent = 'Este material está disponible para préstamo';
-                document.getElementById('mat-id-prestar').value = id;
-                formPrestar.classList.remove('hidden');
+                if (misPendientes.includes(id)) {
+                    pendienteMsg.classList.remove('hidden');
+                } else {
+                    document.getElementById('mat-id-prestar').value = id;
+                    formPrestar.classList.remove('hidden');
+                }
             } else if (estado === 'prestado') {
                 badge.textContent = 'Prestado';
-                badge.className = 'absolute top-3 left-3 text-xs px-3 py-1 uppercase tracking-wider bg-yellow-900/80 text-yellow-300';
+                badge.className = 'badge badge-solid-low';
                 asignadoEl.textContent = prestadoA ? 'Actualmente con: ' + prestadoA : 'Prestado';
-                document.getElementById('mat-id-devolver').value = id;
-                formDevolver.classList.remove('hidden');
+                if (esMio) {
+                    document.getElementById('mat-id-devolver').value = id;
+                    formDevolver.classList.remove('hidden');
+                }
             } else {
                 badge.textContent = 'Mantenimiento';
-                badge.className = 'absolute top-3 left-3 text-xs px-3 py-1 uppercase tracking-wider bg-red-900/80 text-red-300';
+                badge.className = 'badge badge-solid-out';
                 asignadoEl.textContent = 'Este material está en mantenimiento';
             }
+
+            @if($user->rol === 'administrador')
+            document.getElementById('mat-id-estado').value = id;
+            document.getElementById('mat-estado-select').value = estado;
+            @endif
+
+            badge.style.position = 'absolute';
+            badge.style.top = '0.75rem';
+            badge.style.left = '0.75rem';
 
             document.getElementById('modal-material').classList.remove('hidden');
         }

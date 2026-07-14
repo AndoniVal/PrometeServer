@@ -68,14 +68,15 @@ class CalendarioController extends Controller
         $inicio = $evento->getStart()->getDateTime() ?? $evento->getStart()->getDate();
         $fin    = $evento->getEnd()->getDateTime() ?? $evento->getEnd()->getDate();
 
-        // Materiales ya asignados a este evento
-        $asignados = Asignacion::with('material')
-            ->where('google_event_id', $eventId)
-            ->get()
-            ->map(fn ($a) => [
-                'id'     => $a->id,
-                'nombre' => $a->material->nombre,
-            ]);
+    
+    $asignados = Asignacion::with('material')
+    ->where('google_event_id', $eventId)
+    ->get()
+    ->map(fn ($a) => [
+        'id'     => $a->id,
+        'nombre' => $a->material->nombre,
+        'imagen' => $a->material->imagen ? asset('storage/' . $a->material->imagen) : null,
+    ]);
 
         return response()->json([
             'titulo'  => $evento->getSummary() ?? '(sin título)',
@@ -87,19 +88,22 @@ class CalendarioController extends Controller
         ]);
     }
 
-    // Devuelve los materiales que NO están asignados a ningún evento (los libres)
-    public function materialesLibres()
-    {
-        if (auth()->user()->rol !== 'administrador') {
-            abort(403);
-        }
-
-        $libres = Material::doesntHave('asignacion')
-            ->get(['id', 'nombre'])
-            ->map(fn ($m) => ['id' => $m->id, 'nombre' => $m->nombre]);
-
-        return response()->json($libres);
+   
+    public function materialesLibres(){
+    if (auth()->user()->rol !== 'administrador') {
+        abort(403, 'No autorizado.');
     }
+
+    $libres = Material::doesntHave('asignacion')
+        ->get()
+        ->map(fn ($m) => [
+            'id'     => $m->id,
+            'nombre' => $m->nombre,
+            'imagen' => $m->imagen ? asset('storage/' . $m->imagen) : null,
+        ]);
+
+    return response()->json($libres);
+}
 
     // Asigna un material a un evento (reservarlo)
     public function asignarMaterial(Request $request)
@@ -153,91 +157,98 @@ class CalendarioController extends Controller
         return response()->json(['ok' => true]);
     }
 
-   public function index(Request $request)
-    {
-        if (! session()->has('google_token')) {
-            return view('calendario', [
-                'conectado' => false,
-                'user'      => auth()->user(),
-            ]);
-        }
-
-        $mesBase = $request->query('mes')
-            ? Carbon::createFromFormat('Y-m', $request->query('mes'))->startOfMonth()
-            : now()->startOfMonth();
-
-        $accessToken = Crypt::decryptString(session('google_token'));
-        $client = new GoogleClient();
-        $client->setAccessToken($accessToken);
-        $service = new GoogleCalendar($client);
-
-        $calendarioId = 'primary'; 
-        foreach ($service->calendarList->listCalendarList()->getItems() as $cal) {
-            if ($cal->getSummary() === 'Local') {
-                $calendarioId = $cal->getId();
-                break;
-            }
-        }
-
-
-        $resultados = $service->events->listEvents($calendarioId, [
-            'timeMin'      => $mesBase->copy()->startOfMonth()->toRfc3339String(),
-            'timeMax'      => $mesBase->copy()->endOfMonth()->toRfc3339String(),
-            'singleEvents' => true,
-            'orderBy'      => 'startTime',
-        ]);
-
-        $eventosPorDia = [];
-        foreach ($resultados->getItems() as $evento) {
-            $inicio = $evento->getStart()->getDateTime() ?? $evento->getStart()->getDate();
-            $clave  = Carbon::parse($inicio)->format('Y-m-d');
-            $eventosPorDia[$clave][] = [
-                'id'     => $evento->getId(),
-                'titulo' => $evento->getSummary() ?? '(sin título)',
-            ];
-        }
-
-        $inicioRejilla = $mesBase->copy()->startOfMonth()->startOfWeek(Carbon::MONDAY);
-        $finRejilla    = $mesBase->copy()->endOfMonth()->endOfWeek(Carbon::SUNDAY);
-
-        $semanas = [];
-        $cursor  = $inicioRejilla->copy();
-        while ($cursor <= $finRejilla) {
-            $semana = [];
-            for ($i = 0; $i < 7; $i++) {
-                $clave = $cursor->format('Y-m-d');
-                $semana[] = [
-                    'numero'  => $cursor->day,
-                    'delMes'  => $cursor->month === $mesBase->month,
-                    'esHoy'   => $cursor->isToday(),
-                    'eventos' => $eventosPorDia[$clave] ?? [],
-                ];
-                $cursor->addDay();
-            }
-            $semanas[] = $semana;
-        }
-
-        // Meses para el desplegable: el actual + los 11 siguientes
-        $mesesDisponibles = [];
-        $cursorMes = now()->startOfMonth();
-        for ($i = 0; $i < 12; $i++) {
-            $mesesDisponibles[] = [
-                'valor' => $cursorMes->format('Y-m'),
-                'label' => ucfirst($cursorMes->locale('es')->isoFormat('MMMM YYYY')),
-            ];
-            $cursorMes = $cursorMes->copy()->addMonth();
-        }
-
+public function index(Request $request)
+{
+    if (! session()->has('google_token')) {
         return view('calendario', [
-            'conectado'        => true,
-            'user'             => auth()->user(),
-            'semanas'          => $semanas,
-            'tituloMes'        => ucfirst($mesBase->locale('es')->isoFormat('MMMM YYYY')),
-            'mesActualValor'   => $mesBase->format('Y-m'),
-            'mesesDisponibles' => $mesesDisponibles,
+            'conectado' => false,
+            'user'      => auth()->user(),
         ]);
     }
 
+    $mesBase = $request->query('mes')
+        ? Carbon::createFromFormat('Y-m', $request->query('mes'))->startOfMonth()
+        : now()->startOfMonth();
+
+    // La rejilla se calcula ANTES de pedir eventos, para pedir su rango completo
+    // (incluye los días de relleno del mes anterior/siguiente)
+    $inicioRejilla = $mesBase->copy()->startOfMonth()->startOfWeek(Carbon::MONDAY);
+    $finRejilla    = $mesBase->copy()->endOfMonth()->endOfWeek(Carbon::SUNDAY);
+
+    $accessToken = Crypt::decryptString(session('google_token'));
+    $client = new GoogleClient();
+    $client->setAccessToken($accessToken);
+    $service = new GoogleCalendar($client);
+
+    $calendarioId = 'primary';
+    foreach ($service->calendarList->listCalendarList()->getItems() as $cal) {
+        if ($cal->getSummary() === 'Local') {
+            $calendarioId = $cal->getId();
+            break;
+        }
+    }
+
+    $resultados = $service->events->listEvents($calendarioId, [
+        'timeMin'      => $inicioRejilla->copy()->startOfDay()->toRfc3339String(),
+        'timeMax'      => $finRejilla->copy()->endOfDay()->toRfc3339String(),
+        'singleEvents' => true,
+        'orderBy'      => 'startTime',
+    ]);
+
+    // Contamos asignaciones por evento en UNA sola consulta (no una por evento)
+    $idsEventos = collect($resultados->getItems())->map(fn ($e) => $e->getId());
+    $materialesPorEvento = Asignacion::whereIn('google_event_id', $idsEventos)
+        ->selectRaw('google_event_id, COUNT(*) as total')
+        ->groupBy('google_event_id')
+        ->pluck('total', 'google_event_id');
+
+    $eventosPorDia = [];
+    foreach ($resultados->getItems() as $evento) {
+        $inicio = $evento->getStart()->getDateTime() ?? $evento->getStart()->getDate();
+        $clave  = Carbon::parse($inicio)->format('Y-m-d');
+        $eventosPorDia[$clave][] = [
+            'id'         => $evento->getId(),
+            'titulo'     => $evento->getSummary() ?? '(sin título)',
+            'materiales' => $materialesPorEvento[$evento->getId()] ?? 0,
+        ];
+    }
+
+    $semanas = [];
+    $cursor  = $inicioRejilla->copy();
+    while ($cursor <= $finRejilla) {
+        $semana = [];
+        for ($i = 0; $i < 7; $i++) {
+            $clave = $cursor->format('Y-m-d');
+            $semana[] = [
+                'numero'  => $cursor->day,
+                'delMes'  => $cursor->month === $mesBase->month,
+                'esHoy'   => $cursor->isToday(),
+                'eventos' => $eventosPorDia[$clave] ?? [],
+            ];
+            $cursor->addDay();
+        }
+        $semanas[] = $semana;
+    }
+
+    $mesesDisponibles = [];
+    $cursorMes = now()->startOfMonth();
+    for ($i = 0; $i < 12; $i++) {
+        $mesesDisponibles[] = [
+            'valor' => $cursorMes->format('Y-m'),
+            'label' => ucfirst($cursorMes->locale('es')->isoFormat('MMMM YYYY')),
+        ];
+        $cursorMes = $cursorMes->copy()->addMonth();
+    }
+
+    return view('calendario', [
+        'conectado'        => true,
+        'user'             => auth()->user(),
+        'semanas'          => $semanas,
+        'tituloMes'        => ucfirst($mesBase->locale('es')->isoFormat('MMMM YYYY')),
+        'mesActualValor'   => $mesBase->format('Y-m'),
+        'mesesDisponibles' => $mesesDisponibles,
+    ]);
+}
     
 
 }

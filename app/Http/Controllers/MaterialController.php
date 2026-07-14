@@ -155,11 +155,17 @@ class MaterialController extends Controller
         return back()->with('success', '✓ Material creado correctamente.');
     }
 
-    public function destroyMaterial($id)
-    {
-        Material::findOrFail($id)->delete();
-        return back()->with('success', '✓ Material eliminado correctamente.');
+public function destroyMaterial($id)
+{
+    $material = Material::findOrFail($id);
+
+    if ($material->imagen && \Storage::disk('public')->exists($material->imagen)) {
+        \Storage::disk('public')->delete($material->imagen);
     }
+
+    $material->delete();
+    return back()->with('success', '✓ Material eliminado correctamente.');
+}
 
     public function cambiarEstado(Request $request)
     {
