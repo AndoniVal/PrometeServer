@@ -23,4 +23,9 @@ class Material extends Model
     {
         return $this->hasMany(Prestamo::class, 'id_mat');
     }
+
+    public function asignacion()
+    {
+        return $this->hasOne(Asignacion::class, 'id_mat');
+    }
 }

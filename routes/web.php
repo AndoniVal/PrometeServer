@@ -16,8 +16,14 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
 Route::middleware('auth')->group(function () {
+
+    Route::get('/calendario/evento/{eventId}', [CalendarioController::class, 'verEvento'])->name('calendario.evento');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+
+    Route::get('/materiales-libres', [CalendarioController::class, 'materialesLibres'])->name('materiales.libres');
+    Route::post('/calendario/evento/asignar', [CalendarioController::class, 'asignarMaterial'])->name('calendario.asignar');
+    Route::post('/calendario/evento/quitar', [CalendarioController::class, 'quitarMaterial'])->name('calendario.quitar');
 
     // Google Calendar
     Route::get('/auth/google/redirect', [CalendarioController::class, 'redirect'])->name('google.redirect');
